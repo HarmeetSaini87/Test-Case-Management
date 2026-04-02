@@ -1,0 +1,17 @@
+[
+  {
+    "username": "admin",
+    "passwordHash": "admin",
+    "role": "admin"
+  },
+  {
+    "username": "Roshan",
+    "passwordHash": "Bankai@1234",
+    "role": "tester"
+  },
+  {
+    "username": "Jayraj",
+    "passwordHash": "Jayraj",
+    "role": "tester"
+  }
+]

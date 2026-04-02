@@ -1,0 +1,41 @@
+{
+  "executions": [
+    {
+      "id": "1774821065008",
+      "suiteId": "1774819780447",
+      "suiteName": "ffsfsdf",
+      "sprint": "teadsfef",
+      "results": [
+        {
+          "testCaseId": "BSSMED-TC-001",
+          "status": "Fail",
+          "comment": ""
+        }
+      ],
+      "executedBy": "admin",
+      "lastRun": "2026-03-29T21:51:25.603Z",
+      "createdAt": "2026-03-29T21:51:05.008Z"
+    },
+    {
+      "id": "1774821534908",
+      "suiteId": "1774821262530",
+      "suiteName": "ffsfsdf",
+      "sprint": "Sprint 1",
+      "results": [
+        {
+          "testCaseId": "BSSMED-TC-001",
+          "status": "Pending",
+          "comment": ""
+        },
+        {
+          "testCaseId": "BSSMED-TC-002",
+          "status": "Pending",
+          "comment": ""
+        }
+      ],
+      "executedBy": "admin",
+      "lastRun": "2026-03-29T21:58:58.563Z",
+      "createdAt": "2026-03-29T21:58:54.908Z"
+    }
+  ]
+}

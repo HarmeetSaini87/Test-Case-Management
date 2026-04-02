@@ -1,0 +1,33 @@
+[
+  {
+    "id": "proj_1774817401587",
+    "name": "Mediation",
+    "key": "BSSMED",
+    "description": "",
+    "modules": [
+      {
+        "name": "Mediation Configuration",
+        "subModules": [
+          {
+            "name": "Gateway Type Configuration",
+            "entities": []
+          },
+          {
+            "name": "Column Type Configuration",
+            "entities": []
+          },
+          {
+            "name": "Gateway Configuration",
+            "entities": []
+          },
+          {
+            "name": "Source point Configuration",
+            "entities": []
+          }
+        ]
+      }
+    ],
+    "members": [],
+    "createdAt": "2026-03-29T20:50:01.587Z"
+  }
+]
