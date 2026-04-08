@@ -1,51 +1,57 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { LayoutDashboard, ShieldCheck, Settings, LogOut, FolderOpen, Layers, Calendar, FileText, TrendingUp, CheckCircle, XCircle, Clock, AlertCircle, Upload } from "lucide-react";
+import {
+  FileText, CheckCircle, Clock, AlertCircle, TrendingUp, ShieldCheck
+} from "lucide-react";
 import Link from "next/link";
+import Sidebar from "./components/Sidebar";
+import TopNav from "./components/TopNav";
+import { useProject } from "./components/ProjectContext";
 
-function NavItem({ icon, label, active = false, href = "#", onClick }: any) {
-  if (onClick) return (
-    <button onClick={onClick} className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left text-white/60 hover:bg-white/5 hover:text-red-400 transition-all">
-      {icon}<span className="font-medium">{label}</span>
-    </button>
-  );
+function StatCard({ title, value, sub, icon, colorClass }: any) {
   return (
-    <Link href={href} className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left transition-all ${active ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-400 border border-blue-500/30' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}>
-      {icon}<span className="font-medium">{label}</span>
-    </Link>
-  );
-}
-
-function StatCard({ title, value, change, icon, color }: any) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-panel rounded-2xl p-6 border border-white/10 hover:border-white/20 transition">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-white/50">{title}</p>
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>{icon}</div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="stat-card group"
+      style={{ cursor: "default" }}
+    >
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
+        <p style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--text-secondary)" }}>{title}</p>
+        <div style={{
+          width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
+        }} className={`${colorClass} group-hover:scale-110 shadow-lg`}>
+          {icon}
+        </div>
       </div>
-      <p className="text-4xl font-bold text-white mb-1">{value}</p>
-      {change && <p className="text-sm text-white/40">{change}</p>}
+      <p style={{ fontSize: 34, fontWeight: 900, color: "var(--text-primary)", lineHeight: 1, marginBottom: 8, letterSpacing: "-0.02em" }}>{value}</p>
+      {sub && <p style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>{sub}</p>}
     </motion.div>
   );
 }
 
 export default function DashboardPage() {
+  const { activeProject } = useProject();
   const [testCases, setTestCases] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [sprints, setSprints] = useState<any[]>([]);
   const [executions, setExecutions] = useState<any[]>([]);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [username, setUsername] = useState<string>("there");
+  const [suites, setSuites] = useState<any[]>([]);
+  const [username, setUsername] = useState("there");
 
   useEffect(() => {
-    fetch("/api/testcases").then(r => r.json()).then(d => { if (d.success) setTestCases(d.testCases); });
+    fetch(`/api/testcases${activeProject ? `?project=${activeProject}` : ""}`).then(r => r.json()).then(d => { if (d.success) setTestCases(d.testCases); });
     fetch("/api/projects").then(r => r.json()).then(d => { if (d.success) setProjects(d.projects); });
-    fetch("/api/sprints").then(r => r.json()).then(d => { if (d.success) setSprints(d.sprints); });
-    fetch("/api/executions").then(r => r.json()).then(d => { if (d.success) setExecutions(d.executions); });
-    fetch("/api/auth/users?me=true").then(r => r.json()).then(d => { if (d.success) { setUserRole(d.user?.role); setUsername(d.user?.username || "there"); } });
-  }, []);
+    fetch(`/api/sprints${activeProject ? `?project=${activeProject}` : ""}`).then(r => r.json()).then(d => { if (d.success) setSprints(d.sprints); });
+    fetch(`/api/executions${activeProject ? `?project=${activeProject}` : ""}`).then(r => r.json()).then(d => { if (d.success) setExecutions(d.executions); });
+    fetch(`/api/suites${activeProject ? `?project=${activeProject}` : ""}`).then(r => r.json()).then(d => { if (d.success) setSuites(d.suites); });
+    fetch("/api/auth/users?me=true").then(r => r.json()).then(d => {
+      if (d.success) setUsername(d.user?.username || "there");
+    });
+  }, [activeProject]);
 
   const totalTCs = testCases.length;
   const activeTCs = testCases.filter(t => t.status === "Active").length;
@@ -53,133 +59,153 @@ export default function DashboardPage() {
   const highPriority = testCases.filter(t => t.priority === "Highest" || t.priority === "High").length;
   const activeSprint = sprints.find(s => s.status === "Active");
 
+  // Only show executions for suites that currently exist
+  const activeSuitesIds = new Set(suites.map(s => s.id));
+  const validExecutions = executions.filter(e => activeSuitesIds.has(e.suiteId));
+
   const byModule: any = {};
   testCases.forEach(tc => { const k = tc.module || "Unassigned"; byModule[k] = (byModule[k] || 0) + 1; });
   const moduleStats = Object.entries(byModule).sort((a: any, b: any) => b[1] - a[1]).slice(0, 5);
 
-  return (
-    <div className="flex h-screen bg-[#050511] text-[#ededed] font-sans">
-      <aside className="w-64 glass-panel border-r border-white/10 hidden md:flex flex-col">
-        <div className="h-20 flex items-center px-8 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Panamax Logo" className="h-8 w-auto rounded-lg" />
-            <span className="text-xl font-bold tracking-wider text-gradient">PANAMAX</span>
-          </div>
-        </div>
-        <nav className="flex-1 py-8 px-4 flex flex-col gap-2">
-          <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" active href="/" />
-          <NavItem icon={<FolderOpen size={20} />} label="Projects" href="/projects" />
-          <NavItem icon={<ShieldCheck size={20} />} label="Test Repository" href="/testcases" />
-          <NavItem icon={<Layers size={20} />} label="Test Suites" href="/suites" />
-          <NavItem icon={<Calendar size={20} />} label="Sprints" href="/sprints" />
-          <NavItem icon={<Upload size={20} />} label="Import" href="/import" />
-        </nav>
-        <div className="p-4 mt-auto flex flex-col gap-2">
-          {userRole === 'admin' && <NavItem icon={<Settings size={20} />} label="Admin Ops" href="/admin" />}
-          <NavItem icon={<LogOut size={20} />} label="Logout" onClick={async () => { await fetch('/api/auth/login', { method: 'DELETE' }); window.location.href = '/login'; }} />
-        </div>
-      </aside>
+  const sprintKeys = [...new Set(executions.map(e => e.sprint))].slice(0, 5);
 
-      <main className="flex-1 flex flex-col overflow-y-auto">
-        <header className="h-20 glass-panel border-b border-white/10 flex items-center justify-between px-8 z-10 sticky top-0">
-          <h1 className="text-2xl font-semibold">Dashboard</h1>
-          <Link href="/testcases" className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 flex items-center gap-2 font-medium hover:opacity-90 transition shadow-lg text-sm">
-            <FileText size={16} /> Create Test Case
-          </Link>
+  return (
+    <div style={{ display: "flex", height: "100vh", background: "var(--bg-base)", overflow: "hidden" }}>
+      <Sidebar />
+
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto", minWidth: 0 }}>
+        <TopNav />
+        {/* Header */}
+        <header className="page-header border-b border-[var(--border-base)]">
+          <div>
+            <h1 className="page-title text-xl tracking-tight">System Dashboard</h1>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-cyan)] mt-0.5 opacity-80">
+              {activeSprint ? `Active Phase: ${activeSprint.name}` : "Portal Overview"}
+            </p>
+          </div>
         </header>
 
-        <div className="p-8 flex flex-col gap-8 max-w-7xl w-full mx-auto pb-20">
+        <div style={{ padding: "32px", display: "flex", flexDirection: "column", gap: 32, maxWidth: 1600, width: "100%", margin: "0 auto", paddingBottom: 64 }}>
+
           {/* Welcome Banner */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="p-8 rounded-2xl glass-panel relative overflow-hidden border border-white/10">
-            <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-10">
-              <ShieldCheck size={140} className="text-blue-400" />
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} style={{
+            borderRadius: 20, padding: "32px 40px", position: "relative", overflow: "hidden",
+            background: "linear-gradient(135deg, rgba(6,182,212,0.1), rgba(124,58,237,0.1))",
+            border: "1px solid var(--border-strong)",
+            boxShadow: "0 10px 40px -10px rgba(0,0,0,0.3)"
+          }}>
+            <div style={{ position: "absolute", right: 40, top: "50%", transform: "translateY(-50%)", opacity: 0.08 }}>
+              <ShieldCheck size={160} color="var(--accent-cyan)" />
             </div>
-            <div className="relative z-10">
-              <h2 className="text-3xl font-bold mb-2">Welcome back, <span className="text-gradient capitalize">{username}</span> 👋</h2>
-              <p className="text-white/50 text-lg max-w-xl">
-                {activeSprint ? `Active Sprint: ${activeSprint.name}` : null}<br />
-                <span className="text-sm">{totalTCs} test cases across {projects.length} project{projects.length !== 1 ? "s" : ""}.</span>
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <p style={{ color: "var(--accent-cyan)", fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", marginBottom: 8, textTransform: "uppercase" }}>System Overview</p>
+              <h2 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
+                Welcome back, <span className="text-gradient" style={{ textTransform: "capitalize" }}>{username}</span> 👋
+              </h2>
+              <p style={{ color: "var(--text-secondary)", fontSize: 14, fontWeight: 500, maxWidth: 600 }}>
+                Currently managing <strong className="text-[var(--text-primary)]">{totalTCs}</strong> test cases across <strong className="text-[var(--text-primary)]">{activeProject ? `1 project (${activeProject})` : `${projects.length} accessible project${projects.length !== 1 ? 's' : ''}`}</strong>.
               </p>
             </div>
           </motion.div>
 
-          {/* Stats Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard title="Total Test Cases" value={totalTCs} change={`${projects.length} projects`} icon={<FileText size={20} />} color="bg-blue-500/20 text-blue-400" />
-            <StatCard title="Active / Approved" value={activeTCs} change="Validated" icon={<CheckCircle size={20} />} color="bg-green-500/20 text-green-400" />
-            <StatCard title="In Draft" value={draftTCs} change="Pending" icon={<Clock size={20} />} color="bg-yellow-500/20 text-yellow-400" />
-            <StatCard title="High Priority" value={highPriority} change="Attention" icon={<AlertCircle size={20} />} color="bg-red-500/20 text-red-400" />
+          {/* Stats */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
+            <StatCard title="Total Test Cases" value={totalTCs} sub={`${projects.length} projects`} icon={<FileText size={18} />} colorClass="badge-cyan" />
+            <StatCard title="Active / Approved" value={activeTCs} sub="Validated" icon={<CheckCircle size={18} />} colorClass="badge-green" />
+            <StatCard title="In Draft" value={draftTCs} sub="Pending review" icon={<Clock size={18} />} colorClass="badge-yellow" />
+            <StatCard title="High Priority" value={highPriority} sub="Needs attention" icon={<AlertCircle size={18} />} colorClass="badge-red" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Sprint Performance horizontal table */}
-            <div className="glass-panel rounded-2xl p-6 border border-white/10">
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 font-black">SP</div>
-                  <h3 className="font-bold text-white leading-tight">Sprint Performance</h3>
-                </div>
+          {/* Tables row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+
+            {/* Sprint Performance */}
+            <div className="glass-card" style={{ overflow: "hidden" }}>
+              <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-base)", display: "flex", alignItems: "center", gap: 10 }}>
+                <TrendingUp size={16} color="var(--accent-cyan)" />
+                <span style={{ fontWeight: 700, fontSize: 14, color: "var(--text-primary)" }}>Sprint Performance</span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
+              <div style={{ overflowX: "auto" }}>
+                <table className="data-table">
                   <thead>
-                    <tr className="border-b border-white/5 text-[10px] text-white/30 uppercase tracking-widest font-black">
-                      <th className="pb-3 px-1">Sprint</th>
-                      <th className="pb-3 px-1">Status</th>
-                      <th className="pb-3 px-1 text-right">Pass/Fail</th>
+                    <tr>
+                      <th>Sprint</th>
+                      <th>Pass Rate</th>
+                      <th style={{ textAlign: "right" }}>Pass / Fail</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {[...new Set(executions.map(e => e.sprint))].slice(0, 4).map(s => {
+                  <tbody>
+                    {sprintKeys.length === 0 ? (
+                      <tr><td colSpan={3} style={{ textAlign: "center", color: "var(--text-muted)", padding: 32 }}>No execution data yet</td></tr>
+                    ) : sprintKeys.map(s => {
                       const sprintEx = executions.filter(e => e.sprint === s);
                       const totalSteps = sprintEx.reduce((acc, curr) => acc + curr.results.length, 0);
-                      const passSteps = sprintEx.reduce((acc, curr) => acc + curr.results.filter((r:any) => r.status === 'Pass').length, 0);
-                      const failSteps = sprintEx.reduce((acc, curr) => acc + curr.results.filter((r:any) => r.status === 'Fail').length, 0);
+                      const passSteps = sprintEx.reduce((acc, curr) => acc + curr.results.filter((r: any) => r.status === "Pass").length, 0);
+                      const failSteps = sprintEx.reduce((acc, curr) => acc + curr.results.filter((r: any) => r.status === "Fail").length, 0);
                       const per = totalSteps > 0 ? Math.round((passSteps / totalSteps) * 100) : 0;
                       return (
-                        <tr key={s || 'unplanned'}>
-                           <td className="py-3 px-1 text-sm font-bold text-white/70">{s || "Unplanned"}</td>
-                           <td className="py-3 px-1"><span className={`text-[10px] font-black px-2 py-0.5 rounded border ${per > 80 ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>{per}% PASS</span></td>
-                           <td className="py-3 px-1 text-right text-xs font-mono"><span className="text-green-400">{passSteps}</span> <span className="text-white/20">/</span> <span className="text-red-500">{failSteps}</span></td>
+                        <tr key={s || "unplanned"}>
+                          <td style={{ fontWeight: 600, fontSize: 13 }}>{s || "Unplanned"}</td>
+                          <td>
+                            <span className={`badge ${per > 80 ? "badge-green" : per > 50 ? "badge-yellow" : "badge-red"}`}>
+                              {per}% Pass
+                            </span>
+                          </td>
+                          <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: 12 }}>
+                            <span style={{ color: "var(--accent-green)" }}>{passSteps}</span>
+                            <span style={{ color: "var(--text-muted)", margin: "0 4px" }}>/</span>
+                            <span style={{ color: "var(--accent-red)" }}>{failSteps}</span>
+                          </td>
                         </tr>
-                      )
+                      );
                     })}
                   </tbody>
                 </table>
               </div>
             </div>
 
-            {/* Suite Health horizontal table */}
-            <div className="glass-panel rounded-2xl p-6 border border-white/10">
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 font-black">SH</div>
-                  <h3 className="font-bold text-white leading-tight">Suite Health</h3>
+            {/* Suite Health */}
+            <div className="glass-card" style={{ overflow: "hidden" }}>
+              <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-base)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <CheckCircle size={16} color="var(--accent-violet-light)" />
+                  <span style={{ fontWeight: 700, fontSize: 14, color: "var(--text-primary)" }}>Suite Health</span>
                 </div>
-                <Link href="/suites" className="text-[10px] font-black text-blue-400 hover:text-blue-300">DETAILS →</Link>
+                <Link href="/suites" style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-cyan)", textDecoration: "none", letterSpacing: "0.05em" }}>
+                  VIEW ALL →
+                </Link>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
+              <div style={{ overflowX: "auto" }}>
+                <table className="data-table">
                   <thead>
-                    <tr className="border-b border-white/5 text-[10px] text-white/30 uppercase tracking-widest font-black">
-                      <th className="pb-3 px-1">Suite Name</th>
-                      <th className="pb-3 px-1">Sprint</th>
-                      <th className="pb-3 px-1 text-right">Result</th>
+                    <tr>
+                      <th>Suite Name</th>
+                      <th>Sprint</th>
+                      <th style={{ textAlign: "right" }}>Result</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {executions.slice(0, 4).map(e => {
+                  <tbody>
+                    {validExecutions.length === 0 ? (
+                      <tr><td colSpan={3} style={{ textAlign: "center", color: "var(--text-muted)", padding: 32 }}>No active suite results</td></tr>
+                    ) : validExecutions.slice(0, 5).map(e => {
                       const total = e.results.length;
-                      const pass = e.results.filter((r:any) => r.status === 'Pass').length;
-                      const per = total > 0 ? Math.round((pass/total)*100) : 0;
+                      const pass = e.results.filter((r: any) => r.status === "Pass").length;
+                      const per = total > 0 ? Math.round((pass / total) * 100) : 0;
                       return (
                         <tr key={e.id}>
-                          <td className="py-3 px-1 text-sm font-bold text-white/70 truncate max-w-[120px]">{e.suiteName}</td>
-                          <td className="py-3 px-1 text-[10px] text-white/40 uppercase font-black">{e.sprint}</td>
-                          <td className="py-3 px-1 text-right font-black text-xs" style={{ color: per > 80 ? '#10b981' : per > 50 ? '#f59e0b' : '#ef4444' }}>{per}%</td>
+                          <td style={{ fontWeight: 600, fontSize: 13, maxWidth: 180 }}>
+                            <span style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.suiteName}</span>
+                          </td>
+                          <td>
+                            <span className="badge badge-cyan" style={{ fontSize: 9 }}>{e.sprint}</span>
+                          </td>
+                          <td style={{ textAlign: "right", fontWeight: 800, fontSize: 13,
+                            color: per > 80 ? "var(--accent-green)" : per > 50 ? "var(--accent-yellow)" : "var(--accent-red)"
+                          }}>
+                            {per}%
+                          </td>
                         </tr>
-                      )
+                      );
                     })}
                   </tbody>
                 </table>
@@ -187,35 +213,62 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Bottom row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+
             {/* Coverage by Module */}
-            <div className="glass-panel rounded-2xl p-6 border border-white/10">
-              <h3 className="font-semibold text-white/90 mb-5">Coverage by Module</h3>
-              <div className="flex flex-col gap-3">
-                {moduleStats.map(([mod, cnt]: any) => (
-                  <div key={mod} className="flex items-center gap-3">
-                    <p className="text-sm text-white/60 w-32 truncate shrink-0">{mod}</p>
-                    <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${(cnt / totalTCs) * 100}%` }} />
+            <div className="glass-card" style={{ padding: "20px" }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 18 }}>Coverage by Module</h3>
+              {moduleStats.length === 0
+                ? <p style={{ color: "var(--text-muted)", fontSize: 13 }}>No data yet.</p>
+                : moduleStats.map(([mod, cnt]: any) => (
+                  <div key={mod} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                    <p style={{ fontSize: 12, color: "var(--text-secondary)", width: 120, flexShrink: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{mod}</p>
+                    <div style={{ flex: 1, height: 5, background: "var(--border-base)", borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%", borderRadius: 3,
+                        background: "linear-gradient(90deg, var(--accent-cyan), var(--accent-violet))",
+                        width: `${totalTCs > 0 ? (cnt / totalTCs) * 100 : 0}%`,
+                        transition: "width 0.6s"
+                      }} />
                     </div>
-                    <span className="text-xs font-mono text-white/40 w-8 text-right">{cnt}</span>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)", width: 24, textAlign: "right", flexShrink: 0 }}>{cnt}</span>
                   </div>
-                ))}
-              </div>
+                ))
+              }
             </div>
 
-            {/* Sprints Summary */}
-            <div className="glass-panel rounded-2xl p-6 border border-white/10">
-              <div className="flex justify-between items-center mb-5">
-                <h3 className="font-semibold text-white/90">Sprint Cycles</h3>
-                <Link href="/sprints" className="text-xs text-blue-400 hover:text-blue-300">Manage →</Link>
+            {/* Sprint Cycles */}
+            <div className="glass-card" style={{ overflow: "hidden" }}>
+              <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-base)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontWeight: 700, fontSize: 14, color: "var(--text-primary)" }}>Sprint Cycles</span>
+                <Link href="/sprints" style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-cyan)", textDecoration: "none" }}>Manage →</Link>
               </div>
-              {sprints.slice(0, 4).map((s: any) => (
-                <div key={s.id} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0 px-2">
-                  <p className="text-sm text-white/80 font-bold">{s.name}</p>
-                  <span className={`text-[9px] font-black px-2 py-0.5 rounded ${s.status === 'Active' ? 'bg-green-500/10 text-green-400' : 'bg-white/5 text-white/40'}`}>{s.status.toUpperCase()}</span>
-                </div>
-              ))}
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Sprint Name</th>
+                    <th>Project</th>
+                    <th style={{ textAlign: "right" }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sprints.length === 0 ? (
+                    <tr><td colSpan={3} style={{ textAlign: "center", color: "var(--text-muted)", padding: 32 }}>No sprints yet</td></tr>
+                  ) : sprints.slice(0, 5).map((s: any) => (
+                    <tr key={s.id}>
+                      <td style={{ fontWeight: 600, fontSize: 13 }}>{s.name}</td>
+                      <td style={{ fontSize: 11, color: "var(--text-muted)" }}>{s.project || "—"}</td>
+                      <td style={{ textAlign: "right" }}>
+                        <span className={`badge ${s.status === "Active" ? "badge-green" : s.status === "Planned" ? "badge-yellow" : "badge-gray"}`}>
+                          {s.status === "Active" && <span className="glow-dot green" style={{ width: 5, height: 5, marginRight: 3 }} />}
+                          {s.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

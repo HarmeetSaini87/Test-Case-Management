@@ -5,10 +5,14 @@ export function middleware(request: NextRequest) {
   const session = request.cookies.get('panamax_session');
   
   // Exclude auth routes and static assets from redirect
+  const isApiRoute = request.nextUrl.pathname.startsWith('/api');
   const isLoginPage = request.nextUrl.pathname === '/login';
   const isApiAuthRoute = request.nextUrl.pathname.startsWith('/api/auth');
 
   if (!session && !isLoginPage && !isApiAuthRoute) {
+    if (isApiRoute) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

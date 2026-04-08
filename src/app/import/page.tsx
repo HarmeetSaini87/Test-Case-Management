@@ -1,21 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutDashboard, ShieldCheck, Settings, LogOut, FolderOpen, Layers, Calendar, Upload, CheckCircle, AlertCircle, FileSpreadsheet, X, ChevronDown } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, FileSpreadsheet, X, ChevronDown, Plus } from "lucide-react";
 import Link from "next/link";
-
-function NavItem({ icon, label, active = false, href = "#", onClick }: any) {
-  if (onClick) return (
-    <button onClick={onClick} className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left text-white/60 hover:bg-white/5 hover:text-red-400 transition-all">
-      {icon}<span className="font-medium">{label}</span>
-    </button>
-  );
-  return (
-    <Link href={href} className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left transition-all ${active ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-400 border border-blue-500/30' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}>
-      {icon}<span className="font-medium">{label}</span>
-    </Link>
-  );
-}
+import Sidebar from "../components/Sidebar";
 
 export default function ImportPage() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -36,14 +24,11 @@ export default function ImportPage() {
   const handleFile = (file: File) => {
     const valid = file.name.endsWith(".xlsx") || file.name.endsWith(".xls");
     if (!valid) { setError("Only .xlsx and .xls files are supported."); return; }
-    setSelectedFile(file);
-    setResult(null);
-    setError(null);
+    setSelectedFile(file); setResult(null); setError(null);
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
+    e.preventDefault(); setDragOver(false);
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
   };
@@ -51,15 +36,10 @@ export default function ImportPage() {
   const handleImport = async () => {
     if (!selectedFile) return setError("Please select a file.");
     if (!projectKey) return setError("Please select a project to import into.");
-
-    setImporting(true);
-    setError(null);
-    setResult(null);
-
+    setImporting(true); setError(null); setResult(null);
     const form = new FormData();
     form.append("file", selectedFile);
     form.append("projectKey", projectKey);
-
     try {
       const res = await fetch("/api/import", { method: "POST", body: form });
       const data = await res.json();
@@ -72,202 +52,211 @@ export default function ImportPage() {
     }
   };
 
-  return (
-    <div className="flex h-screen bg-[#050511] text-[#ededed] font-sans">
-      <aside className="w-64 glass-panel border-r border-white/10 hidden md:flex flex-col">
-        <div className="h-20 flex items-center px-8 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Panamax Logo" className="h-8 w-auto rounded-lg" />
-            <span className="text-xl font-bold tracking-wider text-gradient">PANAMAX</span>
-          </div>
-        </div>
-        <nav className="flex-1 py-8 px-4 flex flex-col gap-2">
-          <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" href="/" />
-          <NavItem icon={<FolderOpen size={20} />} label="Projects" href="/projects" />
-          <NavItem icon={<ShieldCheck size={20} />} label="Test Repository" href="/testcases" />
-          <NavItem icon={<Layers size={20} />} label="Test Suites" href="/suites" />
-          <NavItem icon={<Calendar size={20} />} label="Sprints" href="/sprints" />
-          <NavItem icon={<Upload size={20} />} label="Import" active href="/import" />
-        </nav>
-        <div className="p-4 mt-auto flex flex-col gap-2">
-          {userRole === 'admin' && <NavItem icon={<Settings size={20} />} label="Admin Ops" href="/admin" />}
-          <NavItem icon={<LogOut size={20} />} label="Logout" onClick={async () => { await fetch('/api/auth/login', { method: 'DELETE' }); window.location.href = '/login'; }} />
-        </div>
-      </aside>
+  const FORMATS = [
+    { tag: "RA", name: "TestCases-RA Format", cols: "Entity Key, Test Case Summary, Priority, Folder Path, Preconditions, Steps..." },
+    { tag: "Regression", name: "Regression List Format", cols: "Test Id, Component, Test Case Name, Precondition, Test Steps, Expected Results, Priority..." },
+    { tag: "Sprint", name: "Sprint Format", cols: "Test Id, Component, Test Objective, Preconditions, Test Steps, Expected Results, Automation Type, Test Intent..." },
+  ];
 
-      <main className="flex-1 overflow-y-auto">
-        <header className="h-20 glass-panel border-b border-white/10 flex items-center justify-between px-8 z-10 sticky top-0">
-          <h1 className="text-2xl font-semibold">Import Test Cases</h1>
+  return (
+    <div style={{ display: "flex", height: "100vh", background: "var(--bg-base)", overflow: "hidden" }}>
+      <Sidebar />
+
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto", minWidth: 0 }}>
+        <header className="page-header">
+          <div>
+            <h1 className="page-title">Import Test Cases</h1>
+            <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 1 }}>Bulk import from Excel (.xlsx / .xls)</p>
+          </div>
         </header>
 
-        <div className="p-8 max-w-3xl mx-auto flex flex-col gap-8">
-          {/* Format Info */}
-          <div className="glass-panel rounded-2xl p-6 border border-blue-500/20 bg-blue-500/5">
-            <h3 className="font-semibold text-blue-400 mb-3 flex items-center gap-2">
-              <FileSpreadsheet size={18} /> Supported Excel Formats
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              {[
-                { name: "TestCases-RA Format", cols: "Entity Key, Test Case Summary, Priority, Folder Path, Preconditions, Steps...", tag: "RA" },
-                { name: "Regression List Format", cols: "Test Id, Component, Test Case Name, Precondition, Test Steps, Expected Results, Priority...", tag: "Regression" },
-                { name: "Sprint Format", cols: "Test Id, Component, Test Objective, Preconditions, Test Steps, Expected Results, Automation Type, Test Intent...", tag: "Sprint" },
-              ].map(f => (
-                <div key={f.tag} className="bg-white/5 rounded-xl p-4 border border-white/10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400">{f.tag}</span>
-                    <span className="font-medium text-white/80 text-xs">{f.name}</span>
-                  </div>
-                  <p className="text-white/40 text-[11px] leading-relaxed">{f.cols}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-white/40 text-xs mt-3">
-              ✅ Multi-row steps are auto-detected per test case. &nbsp;✅ Component column is parsed as Module / Sub-Module. &nbsp;✅ Original Test IDs are preserved in the imported record.
-            </p>
-          </div>
+        <div style={{ padding: "28px", maxWidth: 900, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 32, paddingBottom: 60 }}>
 
-          {/* Step 1: Project Selection */}
-          <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden">
-            <div className="bg-white/5 px-6 py-3 border-b border-white/10 text-sm font-semibold text-white/70">
-              Step 1: Select Target Project
+          {/* Supported Formats */}
+          <section>
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 rounded-lg bg-[var(--accent-cyan)]/10 flex items-center justify-center">
+                <FileSpreadsheet size={18} className="text-[var(--accent-cyan)]" />
+              </div>
+              <h2 className="text-[15px] font-bold text-[var(--text-primary)] tracking-tight">Standardized Excel Formats</h2>
             </div>
-            <div className="p-6">
-              <select
-                value={projectKey}
-                onChange={e => setProjectKey(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 transition appearance-none"
-              >
-                <option value="">— Choose a project to import into —</option>
-                {projects.map((p: any) => (
-                  <option key={p.id} value={p.key}>{p.name} ({p.key})</option>
+            
+            <div className="bg-[var(--bg-overlay)] border border-[var(--border-base)] rounded-2xl p-6 shadow-xl">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+                {FORMATS.map(f => (
+                  <div key={f.tag} className="bg-[var(--bg-surface)] border border-[var(--border-base)] p-5 rounded-2xl hover:border-[var(--accent-cyan)]/30 transition-all shadow-sm group">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <span className="px-2 py-0.5 rounded-lg bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] text-[10px] font-bold border border-[var(--accent-cyan)]/20 uppercase tracking-widest">{f.tag}</span>
+                      <span className="text-[13px] font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-cyan)] transition-colors">{f.name}</span>
+                    </div>
+                    <p className="text-[11px] text-[var(--text-muted)] leading-relaxed italic border-l-2 border-[var(--border-base)] pl-3 group-hover:border-[var(--accent-cyan)]/20 transition-all">
+                      {f.cols}
+                    </p>
+                  </div>
                 ))}
-              </select>
-              {projects.length === 0 && (
-                <p className="text-yellow-400/70 text-xs mt-2">
-                  ⚠️ No projects found. <Link href="/projects" className="underline text-blue-400">Create a project first</Link> before importing.
+              </div>
+              <div className="mt-6 flex items-center gap-3 p-4 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-base)]">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <p className="text-[11px] font-medium text-[var(--text-secondary)]">
+                  RA/Regression/Sprint formats are auto-detected. Multi-row steps are preserved automatically per unique Test ID.
                 </p>
-              )}
-            </div>
-          </div>
-
-          {/* Step 2: File Upload */}
-          <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden">
-            <div className="bg-white/5 px-6 py-3 border-b border-white/10 text-sm font-semibold text-white/70">
-              Step 2: Upload Excel File (.xlsx / .xls)
-            </div>
-            <div className="p-6">
-              <div
-                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
-                onClick={() => fileRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${dragOver ? 'border-blue-500 bg-blue-500/10' : 'border-white/20 hover:border-blue-500/50 hover:bg-white/5'}`}
-              >
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept=".xlsx,.xls"
-                  className="hidden"
-                  onChange={e => { if (e.target.files?.[0]) handleFile(e.target.files[0]); }}
-                />
-                {selectedFile ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <FileSpreadsheet size={48} className="text-green-400" />
-                    <div>
-                      <p className="font-semibold text-white">{selectedFile.name}</p>
-                      <p className="text-white/40 text-sm">{(selectedFile.size / 1024).toFixed(1)} KB</p>
-                    </div>
-                    <button
-                      onClick={e => { e.stopPropagation(); setSelectedFile(null); setResult(null); }}
-                      className="flex items-center gap-1 text-red-400/70 hover:text-red-400 text-xs transition"
-                    >
-                      <X size={14} /> Remove file
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-3 text-white/40">
-                    <Upload size={48} />
-                    <div>
-                      <p className="font-medium text-white/70">Drag & drop your Excel file here</p>
-                      <p className="text-sm mt-1">or click to browse</p>
-                    </div>
-                    <p className="text-xs text-white/30">Supports all 3 sample formats — auto-detected</p>
-                  </div>
-                )}
               </div>
             </div>
+          </section>
+
+          {/* Core Import area */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 32, alignItems: "start" }}>
+            
+            {/* Upload Area */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} 
+              className="bg-[var(--bg-overlay)] border border-[var(--border-base)] rounded-2xl overflow-hidden shadow-xl"
+            >
+              <div className="p-5 border-b border-[var(--border-base)] bg-[var(--bg-surface)] flex items-center gap-2.5">
+                <Upload size={16} className="text-[var(--accent-cyan)]" />
+                <span className="text-sm font-bold text-[var(--text-primary)]">Upload Workbook</span>
+              </div>
+              
+              <div className="p-8">
+                <div
+                  onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={handleDrop}
+                  onClick={() => fileRef.current?.click()}
+                  className={`relative flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-3xl cursor-pointer transition-all ${dragOver ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/5 scale-[0.99]' : 'border-[var(--border-base)] hover:border-[var(--accent-cyan)]/40 hover:bg-[var(--bg-surface)]'}`}
+                >
+                  <input type="file" className="hidden" ref={fileRef} onChange={e => { if (e.target.files?.[0]) handleFile(e.target.files[0]); }} accept=".xlsx,.xls" />
+                  
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all ${selectedFile ? 'bg-green-500/10 text-green-400 rotate-0' : 'bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] rotate-0 group-hover:rotate-12'}`}>
+                    {selectedFile ? <CheckCircle size={32} /> : <Upload size={32} />}
+                  </div>
+                  
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">
+                    {selectedFile ? selectedFile.name : "Select your Excel file"}
+                  </h3>
+                  <p className="text-[11px] text-[var(--text-muted)]">
+                    {selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB · Ready to process` : "Drag workbook here or click to browse"}
+                  </p>
+                  
+                  {dragOver && (
+                    <motion.div layoutId="dropzoneGlow" className="absolute inset-[-4px] rounded-[36px] border border-[var(--accent-cyan)] shadow-[0_0_20px_var(--accent-cyan)] opacity-40" />
+                  )}
+                </div>
+
+                {error && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="mt-5 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-3">
+                    <AlertCircle size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-red-100 uppercase tracking-widest mb-1">Upload Issue</h4>
+                      <p className="text-xs text-red-400 leading-relaxed font-medium">{error}</p>
+                    </div>
+                  </motion.div>
+                )}
+
+                <div className="mt-8 flex gap-3">
+                  {selectedFile && (
+                    <button onClick={() => setSelectedFile(null)} className="px-5 py-3 rounded-xl border border-[var(--border-base)] text-[var(--text-secondary)] font-bold text-xs hover:bg-red-500/5 hover:text-red-400 hover:border-red-500/20 transition-all">
+                      Clear Selection
+                    </button>
+                  )}
+                  <button
+                    disabled={importing || !selectedFile || !projectKey}
+                    onClick={handleImport}
+                    className="flex-1 py-3 bg-gradient-to-r from-[var(--accent-cyan)] to-[var(--accent-violet)] text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 hover:opacity-90 active:scale-[0.98] disabled:opacity-30 disabled:grayscale transition-all text-sm"
+                  >
+                    {importing ? "Processing Framework..." : "Import Test Cases"}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Target Settings */}
+            <div className="flex flex-col gap-6">
+              <div className="bg-[var(--bg-overlay)] border border-[var(--border-base)] rounded-2xl overflow-hidden shadow-xl">
+                <div className="p-5 border-b border-[var(--border-base)] bg-[var(--bg-surface)] flex items-center gap-2.5">
+                  <CheckCircle size={16} className="text-[var(--accent-cyan)]" />
+                  <span className="text-sm font-bold text-[var(--text-primary)]">Deployment Target</span>
+                </div>
+                <div className="p-6">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-3 block">Primary Project Context *</label>
+                  <select value={projectKey} onChange={e => setProjectKey(e.target.value)}
+                    className="form-select font-medium text-[var(--text-primary)] mb-4">
+                    <option value="" style={{ background: 'var(--bg-overlay)' }}>— Select Destination —</option>
+                    {projects.map(p => (
+                      <option key={p.id} value={p.key} style={{ background: 'var(--bg-overlay)' }}>{p.name} ({p.key})</option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-[var(--text-muted)] leading-relaxed italic pr-4">
+                    Assigned project will serve as the master context for all imported entities.
+                  </p>
+                </div>
+              </div>
+              
+              <Link href="/testcases" className="p-5 rounded-2xl bg-[var(--bg-overlay)] border border-[var(--border-base)] hover:border-[var(--accent-cyan)]/30 group transition-all flex items-center justify-between shadow-sm">
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-bold text-[var(--text-primary)]">Test Repository</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">Cancel & View Data</span>
+                </div>
+                <ChevronDown size={14} className="text-[var(--text-muted)] group-hover:text-[var(--accent-cyan)] -rotate-90 transition-all" />
+              </Link>
+            </div>
           </div>
 
-          {/* Error */}
-          {error && (
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-              <AlertCircle size={18} className="shrink-0 mt-0.5" /> {error}
-            </div>
-          )}
-
-          {/* Import Button */}
-          <button
-            onClick={handleImport}
-            disabled={importing || !selectedFile || !projectKey}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 font-semibold text-white text-lg hover:opacity-90 transition shadow-lg disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-          >
-            {importing ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Importing...
-              </>
-            ) : (
-              <>
-                <Upload size={22} /> Import Test Cases
-              </>
-            )}
-          </button>
-
-          {/* Success Result */}
+          {/* Import Results */}
           <AnimatePresence>
             {result && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass-panel rounded-2xl border border-green-500/30 overflow-hidden"
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                className="bg-[var(--bg-overlay)] border border-green-500/30 rounded-2xl overflow-hidden shadow-2xl"
               >
-                <div className="bg-green-500/10 px-6 py-4 border-b border-green-500/20 flex items-center gap-3">
-                  <CheckCircle size={22} className="text-green-400" />
-                  <div>
-                    <h3 className="font-bold text-green-400">Import Successful!</h3>
-                    <p className="text-sm text-white/60">{result.imported} test case{result.imported !== 1 ? "s" : ""} imported into project <span className="text-blue-400 font-mono">{projectKey}</span></p>
+                <div className="p-5 border-b border-green-500/20 bg-green-500/5 flex justify-between items-center">
+                  <div className="flex items-center gap-2.5">
+                    <CheckCircle size={18} className="text-green-400" />
+                    <span className="text-sm font-bold text-green-100 uppercase tracking-widest">Import Cycle Completed</span>
                   </div>
-                  <Link href="/testcases" className="ml-auto px-4 py-2 rounded-lg bg-blue-500/20 text-blue-400 text-sm font-medium hover:bg-blue-500/30 transition">
-                    View Test Cases →
-                  </Link>
+                  <button onClick={() => setResult(null)} className="text-green-400 hover:text-white transition-colors">
+                    <X size={18} />
+                  </button>
                 </div>
-
-                {/* Summary Table */}
-                <div className="p-6 max-h-96 overflow-y-auto">
-                  <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-1 text-xs">
-                    <span className="text-white/30 font-semibold uppercase">ID</span>
-                    <span className="text-white/30 font-semibold uppercase">Title</span>
-                    <span className="text-white/30 font-semibold uppercase">Sheet</span>
-                    {result.summary.map((tc: any) => (
-                      <React.Fragment key={tc.id}>
-                        <span className="font-mono text-blue-400">{tc.id}</span>
-                        <span className="text-white/70 truncate" title={tc.title}>{tc.title}</span>
-                        <span className="text-white/30">{tc.sheet}</span>
-                      </React.Fragment>
-                    ))}
+                <div className="p-8">
+                  <div className="grid grid-cols-3 gap-6 mb-8">
+                    <div className="bg-green-500/10 border border-green-500/20 p-5 rounded-2xl">
+                        <div className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-1">New Test Cases</div>
+                        <div className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">{result.imported || 0}</div>
+                    </div>
+                    <div className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-2xl">
+                        <div className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Processed Items</div>
+                        <div className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">{result.summary?.length || 0}</div>
+                    </div>
                   </div>
+                  
+                  {result.summary?.length > 0 && (
+                    <div>
+                      <h4 className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-3">Processing Manifest</h4>
+                      <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                        {result.summary.map((tc: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-base)] text-[11px] text-[var(--text-secondary)] font-medium flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="text-[var(--accent-cyan)] font-mono opacity-50">#{tc.id}</span>
+                                <span className="truncate max-w-[400px]">{tc.title}</span>
+                            </div>
+                            <span className="text-[9px] font-bold text-[var(--text-muted)]">{tc.sheet}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                {result.skipped?.length > 0 && (
-                  <div className="px-6 pb-4">
-                    <p className="text-yellow-400 text-xs">⚠️ {result.skipped.length} sheet(s) skipped: {result.skipped.map((s: any) => `${s.sheet} (${s.reason})`).join(", ")}</p>
-                  </div>
-                )}
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </main>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-base); border-radius: 10px; }
+      `}</style>
     </div>
   );
 }

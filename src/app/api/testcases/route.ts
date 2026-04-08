@@ -28,7 +28,19 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const project = searchParams.get("project");
+    const testCaseId = searchParams.get("testCaseId");
     const dir = getPath();
+
+    if (testCaseId) {
+      const safe = testCaseId.replace(/[^a-z0-9-]/gi, "_").toLowerCase();
+      const filePath = path.join(dir, `${safe}.json`);
+      if (fs.existsSync(filePath)) {
+        const testCase = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        return NextResponse.json({ success: true, testCase });
+      }
+      return NextResponse.json({ success: false, error: "Test Case not found" }, { status: 404 });
+    }
+
     const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
     const testCases = files
       .map(f => {

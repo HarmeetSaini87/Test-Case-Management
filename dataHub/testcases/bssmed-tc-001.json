@@ -1,0 +1,69 @@
+{
+  "testCaseId": "BSSMED-TC-001",
+  "title": "Test Case 1",
+  "objective": "wrgtergrege",
+  "description": "adsdfsdf",
+  "project": "BSSMED",
+  "module": "Mediation Configuration",
+  "subModule": "Gateway Type Configuration",
+  "entity": "",
+  "priority": "High",
+  "status": "Active",
+  "testCategory": "Functional",
+  "testingType": "Automation",
+  "testIntent": "Validation",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [
+    "sdfsdfsdfsdf"
+  ],
+  "preconditions": "sdfsdfsdfsdf",
+  "estimatedTime": "20",
+  "steps": [
+    {
+      "action": "sdfsdf",
+      "testData": "sdfsd",
+      "expectedResult": "fsdf"
+    },
+    {
+      "action": "sdffsdf",
+      "testData": "sdfdsdfsdf",
+      "expectedResult": "sdfsdfsd"
+    }
+  ],
+  "createdDate": "2026-04-06T04:31:12.994Z",
+  "createdBy": "admin",
+  "updatedDate": "2026-04-06T04:48:32.278Z",
+  "updatedBy": "admin",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-04-06T04:31:12.994Z",
+      "savedBy": "admin",
+      "snapshot": {
+        "title": "Test Case 1",
+        "priority": "High",
+        "status": "Active",
+        "testCategory": "Functional",
+        "testingType": "Automation",
+        "testIntent": "Validation",
+        "preconditions": "sdfsdfsdfsdf",
+        "steps": [
+          {
+            "action": "sdfsdf",
+            "testData": "sdfsd",
+            "expectedResult": "fsdf"
+          },
+          {
+            "action": "sdffsdf",
+            "testData": "sdfdsdfsdf",
+            "expectedResult": "sdfsdfsd"
+          }
+        ],
+        "description": "adsdfsdf",
+        "assignedTester": ""
+      }
+    }
+  ]
+}

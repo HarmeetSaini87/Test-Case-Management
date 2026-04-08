@@ -24,12 +24,19 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: true, user });
   }
 
-  if (!user || user.role !== 'admin') {
-    return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+  if (!user) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Admin gets rich user data, including passwords (since the user requested viewing/editing passwords)
   const users = getAllUsers();
+
+  // Non-Admins get a sanitized list (No sensitive fields)
+  if (user.role !== 'admin') {
+    const sanitized = users.map(u => ({ username: u.username, role: u.role }));
+    return NextResponse.json({ success: true, users: sanitized });
+  }
+
+  // Admin gets rich user data
   return NextResponse.json({ success: true, users });
 }
 
