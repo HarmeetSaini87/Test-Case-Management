@@ -20,6 +20,22 @@
       "executedBy": "admin",
       "lastRun": "2026-04-07T18:25:18.136Z",
       "createdAt": "2026-04-07T18:25:18.136Z"
+    },
+    {
+      "id": "1776015860702",
+      "suiteId": "1775639464522",
+      "suiteName": "BSS Mediation Sprint_27",
+      "sprint": "BSS Mediation Sprint _27",
+      "results": [
+        {
+          "testCaseId": "BSSMED-TC-004",
+          "status": "Fail",
+          "comment": ""
+        }
+      ],
+      "executedBy": "admin",
+      "lastRun": "2026-04-12T17:44:20.702Z",
+      "createdAt": "2026-04-12T17:44:20.702Z"
     }
   ]
 }

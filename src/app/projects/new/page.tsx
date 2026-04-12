@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, ChevronRight, FolderOpen } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ChevronRight, FolderOpen, Tag } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 
-const empty = { name: "", key: "", description: "", modules: [] as any[] };
+const empty = { name: "", key: "", description: "", modules: [] as any[], versions: [] as string[] };
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -108,6 +108,45 @@ export default function NewProjectPage() {
                   <label className="form-label">Description</label>
                   <input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                     className="form-input" placeholder="Optional project description" />
+                </div>
+              </div>
+            </div>
+
+            {/* Versions */}
+            <div className="section-card">
+              <div className="section-header"><Tag size={14} /> Version Management</div>
+              <div style={{ padding: "16px 20px" }}>
+                <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                  <input id="new-v-input" className="form-input" placeholder="Add Version (e.g. 1.0, 2.0)..." 
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        const val = e.currentTarget.value.trim();
+                        if (val) {
+                          setForm(f => ({ ...f, versions: [...(f as any).versions || [], val] }));
+                          e.currentTarget.value = "";
+                        }
+                      }
+                    }}
+                  />
+                  <button className="btn-ghost" onClick={() => {
+                    const i = document.getElementById('new-v-input') as HTMLInputElement;
+                    if (i.value.trim()) {
+                      setForm(f => ({ ...f, versions: [...(f as any).versions || [], i.value.trim()] }));
+                      i.value = "";
+                    }
+                  }}>
+                    <Plus size={14} />
+                  </button>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {((form as any).versions || []).map((v: string, idx: number) => (
+                    <span key={idx} className="badge badge-violet" style={{ padding: "4px 10px", display: "flex", alignItems: "center", gap: 6 }}>
+                      {v}
+                      <button onClick={() => setForm(f => ({ ...f, versions: ((f as any).versions || []).filter((_: any, i: number) => i !== idx) }))}>
+                        <Trash2 size={10} />
+                      </button>
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>

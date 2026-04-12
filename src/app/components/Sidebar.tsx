@@ -10,8 +10,8 @@ import ThemeToggle from "./ThemeToggle";
 import { useProject } from "./ProjectContext";
 
 const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: "Dashboard",      href: "/" },
-  { icon: FolderOpen,      label: "Projects",        href: "/projects" },
+  { icon: LayoutDashboard, label: "Interactive Dashboard", href: "/dashboard" },
+  { icon: FolderOpen,      label: "Projects",              href: "/projects" },
   { icon: ShieldCheck,     label: "Test Repository", href: "/testcases" },
   { icon: Layers,          label: "Test Suites",     href: "/suites" },
   { icon: Calendar,        label: "Sprints",         href: "/sprints" },

@@ -291,12 +291,20 @@ export default function SuitesPage() {
           </header>
 
           <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px" }}>
-            {suites.length === 0 ? (
+            {!activeProject ? (
+              <div className="text-center mt-20 p-12 glass-panel border border-[var(--border-base)] rounded-3xl max-w-lg mx-auto">
+                <Layers className="mx-auto text-[var(--accent-cyan)] mb-4 animate-pulse" size={48} />
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No Project Selected</h3>
+                <p className="text-[var(--text-muted)] text-sm">
+                  Please select a project from the top menu to view and manage your Test Suites.
+                </p>
+              </div>
+            ) : suites.length === 0 ? (
               <div className="empty-state">
                 <Layers size={52} />
                 <h3>No Test Suites Found</h3>
-                <p>{activeProject ? "Go to the Test Repository, select test cases, and use 'Add to Test Suite'." : "Please select a project from the sidebar top menu."}</p>
-                {activeProject && <Link href="/testcases" className="btn-primary" style={{ marginTop: 8 }}>Go to Repository</Link>}
+                <p>Go to the Test Repository, select test cases, and use 'Add to Test Suite'.</p>
+                <Link href="/testcases" className="btn-primary" style={{ marginTop: 8 }}>Go to Repository</Link>
               </div>
             ) : (
               <div className="section-card">

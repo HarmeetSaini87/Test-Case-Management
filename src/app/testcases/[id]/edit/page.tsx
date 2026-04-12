@@ -11,7 +11,7 @@ import TopNav from "../../../components/TopNav";
 import { useProject } from "../../../components/ProjectContext";
 
 const EMPTY_TC = {
-  title: "", objective: "", description: "", project: "", module: "", subModule: "", entity: "",
+  title: "", objective: "", description: "", project: "", versionNumbers: [] as string[], module: "", subModule: "", entity: "",
   priority: "Medium", status: "Draft", testCategory: "", testingType: "",
   testIntent: "", automationType: "Not Automated", labels: [] as string[],
   preconditions: "", estimatedTime: "",
@@ -91,6 +91,16 @@ export default function EditTestCasePage() {
       alert("Please select a Project from the top dropdown before saving.");
       return;
     }
+
+    // MANDATORY FIELD VALIDATION
+    if (!(form as any).versionNumbers || (form as any).versionNumbers.length === 0) { alert("At least one Applicable Version is required"); return; }
+    if (!form.module) { alert("Module is required"); return; }
+    if (!form.subModule) { alert("Sub-Module is required"); return; }
+    if (!form.priority) { alert("Priority is required"); return; }
+    if (!form.status) { alert("Status is required"); return; }
+    if (!form.testCategory) { alert("Test Category is required"); return; }
+    if (!form.testingType) { alert("Testing Type is required"); return; }
+    if (!form.testIntent) { alert("Test Intent is required"); return; }
 
     // 1. Prune empty steps first
     const prunedSteps = (form.steps || []).filter((s: any) => s.action.trim() || s.expectedResult.trim());
@@ -196,8 +206,38 @@ export default function EditTestCasePage() {
               <div className="section-header">📁 Classification & Metadata</div>
               <input type="hidden" value={activeProject} />
               <div style={{ padding: "16px 20px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+                <div style={{ gridColumn: "span 3" }}>
+                  <label className="form-label">Versions Applicable <span style={{ color: "#ef4444" }}>*</span></label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
+                    {((form as any).versionNumbers || []).length === 0 && (
+                      <span style={{ fontSize: 12, color: "var(--text-disabled)", fontStyle: "italic" }}>No versions selected...</span>
+                    )}
+                    {((form as any).versionNumbers || []).map((v: string) => (
+                      <span key={v} className="badge badge-violet" style={{ padding: "4px 12px", display: "flex", alignItems: "center", gap: 8, fontWeight: 700 }}>
+                        {v}
+                        <button onClick={() => setForm(f => ({ ...f, versionNumbers: (f as any).versionNumbers.filter((vn: string) => vn !== v) }))}>
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <select 
+                    value="" 
+                    onChange={e => {
+                      const v = e.target.value;
+                      if (!v) return;
+                      const current = (form as any).versionNumbers || [];
+                      if (!current.includes(v)) {
+                         setForm(f => ({ ...f, versionNumbers: [...current, v] }));
+                      }
+                    }} 
+                    style={selectStyle}>
+                    <option value="">— Add Version —</option>
+                    {(selectedProject?.versions || []).map((v: string) => <option key={v} value={v}>{v}</option>)}
+                  </select>
+                </div>
                 <div>
-                  <label className="form-label">Module</label>
+                  <label className="form-label">Module <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.module}
                     onChange={e => setForm(f => ({ ...f, module: e.target.value, subModule: "", entity: "" }))}
                     style={selectStyle}>
@@ -206,7 +246,7 @@ export default function EditTestCasePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Sub-Module</label>
+                  <label className="form-label">Sub-Module <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.subModule}
                     onChange={e => setForm(f => ({ ...f, subModule: e.target.value, entity: "" }))}
                     style={selectStyle}>
@@ -222,33 +262,33 @@ export default function EditTestCasePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Priority</label>
+                  <label className="form-label">Priority <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value }))} style={selectStyle}>
                     {["Highest", "High", "Medium", "Low"].map(p => <option key={p}>{p}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Status</label>
+                  <label className="form-label">Status <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))} style={selectStyle}>
                     {["Draft", "Active", "Review", "Deprecated"].map(s => <option key={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Test Category</label>
+                  <label className="form-label">Test Category <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.testCategory} onChange={e => setForm(f => ({ ...f, testCategory: e.target.value }))} style={selectStyle}>
                     <option value="">— Select —</option>
                     {configs.testCategories.filter((c:any)=>c.enabled!==false).map((c: any) => <option key={c.id||c.name} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Testing Type</label>
+                  <label className="form-label">Testing Type <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.testingType} onChange={e => setForm(f => ({ ...f, testingType: e.target.value }))} style={selectStyle}>
                     <option value="">— Select —</option>
                     {configs.testingTypes.filter((t:any)=>t.enabled!==false).map((t: any) => <option key={t.id||t.name} value={t.name}>{t.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Test Intent</label>
+                  <label className="form-label">Test Intent <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.testIntent} onChange={e => setForm(f => ({ ...f, testIntent: e.target.value }))} style={selectStyle}>
                     <option value="">— Select —</option>
                     {configs.testIntents.filter((i:any)=>i.enabled!==false).map((i: any) => <option key={i.id||i.name} value={i.name}>{i.name}</option>)}

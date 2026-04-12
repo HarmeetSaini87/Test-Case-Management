@@ -30,8 +30,9 @@ function getNextId(dir: string, projectKey: string): string {
  * Format 1: TestCases-RA style (Created By, Entity Key, Test Case Summary...)
  * Format 2: Regression / Sprint style (S.no., Test Id, Component, Test Case Name...)
  */
-function detectFormat(headers: string[]): "RA" | "SPRINT" | "UNKNOWN" {
+function detectFormat(headers: string[]): "RA" | "SPRINT" | "PANAMAX" | "UNKNOWN" {
   const h = headers.map(h => String(h || "").toLowerCase());
+  if (h.includes("id") && h.includes("title") && h.includes("test step")) return "PANAMAX";
   if (h.includes("entity key") || h.includes("test case summary")) return "RA";
   if (h.includes("test id") || h.includes("component") || h.includes("test case name")) return "SPRINT";
   return "UNKNOWN";
@@ -86,6 +87,34 @@ function extractStepsSprint(rows: any[][], startRow: number, headers: string[]):
       steps.push({
         action: String(row[stepsIdx] || "").trim(),
         testData: String(row[stepDataIdx] || row[testDataIdx] || "").trim(),
+        expectedResult: String(row[expectedIdx] || "").trim(),
+      });
+    }
+    i++;
+  }
+
+  return { steps, endRow: i };
+}
+
+function extractStepsBankai(rows: any[][], startRow: number, headers: string[]): { steps: any[]; endRow: number } {
+  const stepsIdx = headers.findIndex(h => String(h).toLowerCase() === "test step");
+  const expectedIdx = headers.findIndex(h => String(h).toLowerCase() === "expected result");
+  const stepDataIdx = headers.findIndex(h => String(h).toLowerCase() === "step test data");
+  const idIdx = headers.findIndex(h => String(h).toLowerCase() === "id");
+  const titleIdx = headers.findIndex(h => String(h).toLowerCase() === "title");
+
+  const steps: any[] = [];
+  let i = startRow;
+
+  while (i < rows.length) {
+    const row = rows[i];
+    // new test case starts when ID or Title is non-empty
+    if (i > startRow && ((row[idIdx] !== undefined && row[idIdx] !== "") || (row[titleIdx] !== undefined && row[titleIdx] !== ""))) break;
+    
+    if (row[stepsIdx] !== undefined && row[stepsIdx] !== null && row[stepsIdx] !== "" && row[stepsIdx] !== "—") {
+      steps.push({
+        action: String(row[stepsIdx] || "").trim(),
+        testData: String(row[stepDataIdx] || "").trim(),
         expectedResult: String(row[expectedIdx] || "").trim(),
       });
     }
@@ -240,6 +269,72 @@ export async function POST(req: Request) {
             updatedBy: "import",
             updatedDate: now,
             version: 1,
+          };
+
+          const safe = id.replace(/[^a-z0-9-]/gi, "_").toLowerCase();
+          fs.writeFileSync(path.join(dir, `${safe}.json`), JSON.stringify(tc, null, 2), "utf-8");
+          imported.push({ id, title, sheet: sheetName, originalId: tc.originalId });
+
+          i = endRow;
+        }
+      }
+
+      if (format === "PANAMAX") {
+        const idIdx = headers.findIndex(h => h.toLowerCase() === "id");
+        const titleIdx = headers.findIndex(h => h.toLowerCase() === "title");
+        const moduleIdx = headers.findIndex(h => h.toLowerCase() === "module");
+        const subModuleIdx = headers.findIndex(h => h.toLowerCase() === "sub-module");
+        const entityIdx = headers.findIndex(h => h.toLowerCase() === "entity");
+        const priorityIdx = headers.findIndex(h => h.toLowerCase() === "priority");
+        const statusIdx = headers.findIndex(h => h.toLowerCase() === "status");
+        const catIdx = headers.findIndex(h => h.toLowerCase() === "test category");
+        const typeIdx = headers.findIndex(h => h.toLowerCase() === "testing type");
+        const intentIdx = headers.findIndex(h => h.toLowerCase() === "test intent");
+        const autoIdx = headers.findIndex(h => h.toLowerCase() === "automation type");
+        const labelsIdx = headers.findIndex(h => h.toLowerCase() === "labels");
+        const objIdx = headers.findIndex(h => h.toLowerCase() === "objective");
+        const descIdx = headers.findIndex(h => h.toLowerCase() === "description");
+        const precondIdx = headers.findIndex(h => h.toLowerCase() === "preconditions");
+        const postcondIdx = headers.findIndex(h => h.toLowerCase() === "postconditions");
+        const timeIdx = headers.findIndex(h => h.toLowerCase() === "estimated time");
+        const versionIdx = headers.findIndex(h => h.toLowerCase() === "version");
+        const createdByIdx = headers.findIndex(h => h.toLowerCase() === "created by");
+
+        let i = 1;
+        while (i < rows.length) {
+          const row = rows[i];
+          const title = String(row[titleIdx] || "").trim();
+          if (!title) { i++; continue; }
+
+          const { steps, endRow } = extractStepsBankai(rows, i, headers);
+
+          const id = getNextId(dir, projectKey);
+          const tc: any = {
+            testCaseId: id,
+            originalId: String(row[idIdx] || ""),
+            title,
+            description: String(row[descIdx] || "").trim(),
+            objective: String(row[objIdx] || "").trim(),
+            project: projectKey,
+            module: String(row[moduleIdx] || "").trim(),
+            subModule: String(row[subModuleIdx] || "").trim(),
+            entity: String(row[entityIdx] || "").trim(),
+            priority: String(row[priorityIdx] || "Medium"),
+            status: String(row[statusIdx] || "Draft"),
+            testCategory: String(row[catIdx] || "Functional"),
+            testingType: String(row[typeIdx] || "Regression"),
+            testIntent: String(row[intentIdx] || "Positive"),
+            automationType: String(row[autoIdx] || "Not Automated"),
+            labels: String(row[labelsIdx] || "").split(";").map((l: string) => l.trim()).filter(Boolean),
+            preconditions: String(row[precondIdx] || "").trim(),
+            postconditions: String(row[postcondIdx] || "").trim(),
+            estimatedTime: String(row[timeIdx] || "").trim(),
+            steps,
+            createdBy: String(row[createdByIdx] || "import"),
+            createdDate: now,
+            updatedBy: "import",
+            updatedDate: now,
+            version: parseInt(String(row[versionIdx] || "1"), 10) || 1,
           };
 
           const safe = id.replace(/[^a-z0-9-]/gi, "_").toLowerCase();
