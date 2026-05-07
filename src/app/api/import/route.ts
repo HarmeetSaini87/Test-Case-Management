@@ -12,17 +12,21 @@ function getDataHubPath() {
 function getNextId(dir: string, projectKey: string): string {
   const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
   const nums: number[] = [];
+  const prefix = `${projectKey}-TC-`;
   files.forEach(f => {
     try {
       const tc = JSON.parse(fs.readFileSync(path.join(dir, f), "utf-8"));
-      if (tc.testCaseId) {
-        const parts = tc.testCaseId.split("-TC-");
-        if (parts.length === 2) nums.push(parseInt(parts[1], 10));
+      if (tc.testCaseId && tc.testCaseId.startsWith(prefix)) {
+        const parts = tc.testCaseId.split(prefix);
+        if (parts.length === 2) {
+          const num = parseInt(parts[1], 10);
+          if (!isNaN(num)) nums.push(num);
+        }
       }
     } catch {}
   });
   const next = nums.length > 0 ? Math.max(...nums) + 1 : 1;
-  return `${projectKey}-TC-${String(next).padStart(3, "0")}`;
+  return `${prefix}${String(next).padStart(3, "0")}`;
 }
 
 /**

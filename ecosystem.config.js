@@ -1,13 +1,14 @@
 module.exports = {
   apps: [
     {
-      name: 'bankai-tcms',
-      script: 'node_modules/next/dist/bin/next',
-      args: 'start -p 4201',
-      cwd: 'e:/AI Agent/BankaiProd/bankai-app',
+      name: 'bankai-tcms-dev',
+      cwd: 'e:/AI Agent/Bankai/bankai-app',
+      script: 'server.js',
       env: {
-        NODE_ENV: 'production'
+        NODE_ENV: 'production',
+        PORT: 4202
       }
     }
   ]
 };
+

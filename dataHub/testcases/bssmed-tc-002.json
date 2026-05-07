@@ -1,5 +1,5 @@
 {
-  "testCaseId": "BSSMED-TC-004",
+  "testCaseId": "BSSMED-TC-002",
   "title": "Filter Rule master page - verify that user is allowed to configured \"Equal\" operator with \"Blank\" value",
   "objective": "",
   "description": "",

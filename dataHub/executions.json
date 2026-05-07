@@ -28,7 +28,7 @@
       "sprint": "BSS Mediation Sprint _27",
       "results": [
         {
-          "testCaseId": "BSSMED-TC-004",
+          "testCaseId": "BSSMED-TC-002",
           "status": "Fail",
           "comment": ""
         }
