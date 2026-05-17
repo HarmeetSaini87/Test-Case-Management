@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, FolderOpen, ShieldCheck, Layers,
-  Calendar, Upload, Settings, LogOut, Zap, ChevronRight, FileText
+  Calendar, Upload, Settings, LogOut, Zap, ChevronRight, FileText, Network
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useProject } from "./ProjectContext";
@@ -164,6 +164,50 @@ export default function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Dynamic Project Links for RTM */}
+        {activeProject && (
+          <>
+            <div style={{ padding: expanded ? "10px 12px 4px" : "10px 0 4px", marginTop: "8px", borderTop: "1px solid var(--border-base)", textAlign: expanded ? "left" : "center" }}>
+              {expanded ? <span style={{fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)"}}>Traceability</span> : <div style={{width: 20, height: 1, background: "var(--border-base)", margin: "0 auto"}}></div>}
+            </div>
+            
+            {[
+              { icon: FileText, label: "Req Catalog", href: `/projects/${activeProject}/requirements` },
+              { icon: Network, label: "RTM Matrix", href: `/projects/${activeProject}/rtm` }
+            ].map(({ icon: Icon, label, href }) => {
+              const active = isActive(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`sidebar-nav-item${active ? " active" : ""}`}
+                  title={!expanded ? label : undefined}
+                  style={{
+                    padding: expanded ? "10px 12px" : "10px 0",
+                    justifyContent: expanded ? "flex-start" : "center",
+                  }}
+                >
+                  {active && (
+                    <span style={{
+                      position: "absolute", left: 0, top: "22%", bottom: "22%",
+                      width: 3, borderRadius: "0 3px 3px 0",
+                      background: "linear-gradient(180deg, var(--accent-cyan), var(--accent-violet))",
+                      boxShadow: "0 0 8px var(--accent-cyan)"
+                    }} />
+                  )}
+                  <Icon size={18} style={{ flexShrink: 0, filter: active ? "drop-shadow(0 0 6px var(--accent-cyan))" : "none", transition: "filter 0.2s" }} />
+                  {expanded && <span style={{ fontSize: 13, overflow: "hidden", textOverflow: "ellipsis" }}>{label}</span>}
+                  {!expanded && (
+                    <span className="nav-tooltip" style={{
+                      position: "absolute", left: "calc(100% + 12px)", top: "50%", transform: "translateY(-50%)", background: "var(--bg-overlay)", border: "1px solid var(--border-strong)", color: "var(--text-primary)", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 7, whiteSpace: "nowrap", pointerEvents: "none", opacity: 0, transition: "opacity 0.15s", boxShadow: "var(--shadow-lg)", zIndex: 999
+                    }}>{label}</span>
+                  )}
+                </Link>
+              );
+            })}
+          </>
+        )}
       </nav>
 
       {/* ── Bottom: Theme Toggle + Admin + Logout ── */}
