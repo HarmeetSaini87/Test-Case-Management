@@ -17,7 +17,6 @@ export async function GET(req: Request) {
     
     // Exclude archived epics entirely from the API response
     epics = epics.filter(e => e.status?.toUpperCase() !== "ARCHIVED");
-    
     return NextResponse.json({ success: true, epics });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

@@ -2,103 +2,70 @@
   "schemaVersion": 1,
   "stories": [
     {
-      "id": "rtm-us-1779084494027",
-      "projectId": "BSSFMS",
+      "id": "rtm-story-1779011032337",
+      "epicId": "rtm-epic-1779010989023",
+      "projectId": "BSSMED",
+      "key": "ST-01",
+      "name": "Story testing 1",
+      "status": "ACTIVE",
+      "version": 1,
+      "createdAt": "2026-05-17T09:43:52.337Z",
+      "updatedAt": "2026-05-17T09:43:52.337Z"
+    },
+    {
+      "id": "rtm-story-1779011046892",
+      "epicId": "rtm-epic-1779010989023",
+      "projectId": "BSSMED",
+      "key": "ST-02",
+      "name": "Story testing 2",
+      "status": "ACTIVE",
+      "version": 1,
+      "createdAt": "2026-05-17T09:44:06.892Z",
+      "updatedAt": "2026-05-17T09:44:06.892Z"
+    },
+    {
+      "id": "rtm-story-1779011354067",
+      "epicId": "rtm-epic-1779011338585",
+      "projectId": "BSSMED",
+      "key": "BSSST-1212",
+      "name": "dasfdsfdsf",
+      "status": "ACTIVE",
+      "version": 1,
+      "createdAt": "2026-05-17T09:49:14.067Z",
+      "updatedAt": "2026-05-17T09:49:14.067Z"
+    },
+    {
+      "id": "rtm-story-1779015494200",
+      "epicId": "rtm-epic-1779015483265",
+      "projectId": "BSSRA",
+      "key": "RAST-121",
+      "name": "fgdgfdgfdgfdgfdgfdg",
+      "status": "ACTIVE",
+      "version": 1,
+      "createdAt": "2026-05-17T10:58:14.200Z",
+      "updatedAt": "2026-05-17T10:58:14.200Z"
+    },
+    {
+      "id": "rtm-story-1779084478330",
       "epicId": "rtm-epic-1779084324066",
-      "key": "BFR-440",
-      "title": "Column Configuration list Page",
+      "projectId": "BSSFMS",
+      "key": "ST-141",
+      "name": "Dynamic Column Binding",
       "status": "ACTIVE",
       "version": 1,
-      "createdAt": "2026-05-18T06:08:14.027Z",
-      "updatedAt": "2026-05-18T06:08:14.027Z"
+      "createdAt": "2026-05-18T06:07:58.330Z",
+      "updatedAt": "2026-05-18T06:07:58.330Z"
     },
     {
-      "id": "rtm-us-1779084521257",
+      "id": "rtm-story-1779084534125",
+      "epicId": "rtm-epic-1779084389111",
       "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084324066",
-      "key": "BFR-441",
-      "title": "Column Configuration Master Page",
+      "key": "ST-151",
+      "name": "Mobile Responsiveness",
       "status": "ACTIVE",
       "version": 1,
-      "createdAt": "2026-05-18T06:08:41.257Z",
-      "updatedAt": "2026-05-18T06:08:41.257Z"
-    },
-    {
-      "id": "rtm-us-1779084546576",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084324066",
-      "key": "BFR-442",
-      "title": "Data Import functionality for Column configuration list page (Only for Usage columns)",
-      "status": "ACTIVE",
-      "version": 1,
-      "createdAt": "2026-05-18T06:09:06.576Z",
-      "updatedAt": "2026-05-18T06:09:06.576Z"
-    },
-    {
-      "id": "rtm-us-1779085204623",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084389111",
-      "key": "BFR-471",
-      "title": "Replace MongoDBCDRDateTimeColumn with Data Source Query Field Across FMS Services",
-      "status": "ARCHIVED",
-      "version": 2,
-      "createdAt": "2026-05-18T06:20:04.624Z",
-      "updatedAt": "2026-05-19T12:17:24.520Z"
-    },
-    {
-      "id": "rtm-us-1779085250688",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084389111",
-      "key": "BFR-470",
-      "title": "Refactor Loader Configuration to Use App/System Settings for DB Credentials (Service & Web API)",
-      "status": "ARCHIVED",
-      "version": 2,
-      "createdAt": "2026-05-18T06:20:50.688Z",
-      "updatedAt": "2026-05-19T12:17:33.506Z"
-    },
-    {
-      "id": "rtm-us-1779085296119",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084389111",
-      "key": "BFR-464",
-      "title": "Record View Submodule Changes to Control Point",
-      "status": "ACTIVE",
-      "version": 1,
-      "createdAt": "2026-05-18T06:21:36.120Z",
-      "updatedAt": "2026-05-18T06:21:36.120Z"
-    },
-    {
-      "id": "rtm-us-1779085339372",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084389111",
-      "key": "BFR-480",
-      "title": "Regression Testing of Sprint 14",
-      "status": "ARCHIVED",
-      "version": 2,
-      "createdAt": "2026-05-18T06:22:19.373Z",
-      "updatedAt": "2026-05-19T12:17:44.741Z"
-    },
-    {
-      "id": "rtm-us-1779086535323",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084389111",
-      "key": "BFR-450",
-      "title": "Add Mandatory Query Field in Data source page",
-      "status": "ACTIVE",
-      "version": 1,
-      "createdAt": "2026-05-18T06:42:15.323Z",
-      "updatedAt": "2026-05-18T06:42:15.323Z"
-    },
-    {
-      "id": "rtm-us-1779086568659",
-      "projectId": "BSSFMS",
-      "epicId": "rtm-epic-1779084389111",
-      "key": "BFR-463",
-      "title": "Revamping of FMS Loader Page",
-      "status": "ACTIVE",
-      "version": 1,
-      "createdAt": "2026-05-18T06:42:48.659Z",
-      "updatedAt": "2026-05-18T06:42:48.659Z"
+      "createdAt": "2026-05-18T06:08:54.126Z",
+      "updatedAt": "2026-05-18T06:08:54.126Z"
     }
   ]
 }

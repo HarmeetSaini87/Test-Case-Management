@@ -533,7 +533,11 @@ export default function RtmDashboard() {
                               <div>
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                                   {linkedTc.map(tc => {
+<<<<<<< HEAD
                                     const isPassing = ["ACTIVE", "APPROVED", "DRAFT", "REVIEW"].includes(tc.status?.toUpperCase());
+=======
+                                    const isPassing = ["ACTIVE", "APPROVED", "DRAFT"].includes(tc.status?.toUpperCase());
+>>>>>>> origin/master
                                     return (
                                       <Link key={tc.testCaseId} href={`/testcases/${tc.testCaseId}/edit`} style={{ textDecoration: "none" }}>
                                         <span style={{ 
