@@ -46,4 +46,6 @@ next-env.d.ts
 build_out.txt
 dataHub_backup_before_reindex/
 rebuild-prod.log
+dataHub/
+
 
