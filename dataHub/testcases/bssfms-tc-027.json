@@ -1,0 +1,92 @@
+{
+  "testCaseId": "BSSFMS-TC-027",
+  "title": "Verify that if the file contains more than mandatory columns than that file should not processed.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "High",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the import button",
+      "testData": "",
+      "expectedResult": "Pop up window for file upload should open"
+    },
+    {
+      "action": "Now upload the file which contains only more  than three columns",
+      "testData": "",
+      "expectedResult": "Error message should be display."
+    }
+  ],
+  "createdDate": "2026-05-12T05:53:41.868Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T10:17:14.888Z",
+  "updatedBy": "Jayraj",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if the file contains more than mandatory columns than that file should not processed.",
+        "priority": "High",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the import button",
+            "testData": "",
+            "expectedResult": "Pop up window for file upload should open"
+          },
+          {
+            "action": "Now upload the file which contains only more  than three columns",
+            "testData": "",
+            "expectedResult": "Error message should be display."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084546576",
+      "title": "BFR-442"
+    }
+  ]
+}

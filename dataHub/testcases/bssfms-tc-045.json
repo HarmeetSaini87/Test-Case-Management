@@ -1,0 +1,168 @@
+{
+  "testCaseId": "BSSFMS-TC-045",
+  "title": "Verify and check UI changes of loader master page.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Loader Configuration",
+  "entity": "",
+  "priority": "High",
+  "status": "Active",
+  "testCategory": "Smoke",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.User should be on the home page\n2.Data Source already configured.\n3.Data Stream already configured.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Loader Configuration",
+      "testData": "",
+      "expectedResult": "User should be redirect to the list page of loader configuration"
+    },
+    {
+      "action": "Click on the + button",
+      "testData": "",
+      "expectedResult": "Loader configuration master page should be open"
+    },
+    {
+      "action": "Observe the changes on the loader master page",
+      "testData": "",
+      "expectedResult": "1.DB Related fields should be removed.\n2.Table name field should be removed.\n3. test connection button should be removed.\n4.Date format field should be non editable."
+    }
+  ],
+  "createdDate": "2026-05-14T06:02:15.791Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T12:30:56.643Z",
+  "updatedBy": "admin",
+  "version": 4,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-14T06:02:15.791Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify and check UI changes of loader master page.",
+        "priority": "High",
+        "status": "Review",
+        "testCategory": "Smoke",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page\n2.Data Source already configured.\n3.Data Stream already configured.",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Loader Configuration",
+            "testData": "",
+            "expectedResult": "User should be redirect to the list page of loader configuration"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Loader configuration master page should be open"
+          },
+          {
+            "action": "Observe the changes on the loader master page",
+            "testData": "",
+            "expectedResult": "1.DB Related fields should be removed.\n2.Table name field should be removed.\n3. test connection button should be removed.\n4.Date format field should be non editable."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify and check UI changes of loader master page.",
+        "priority": "High",
+        "status": "Review",
+        "testCategory": "Smoke",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page\n2.Data Source already configured.\n3.Data Stream already configured.",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Loader Configuration",
+            "testData": "",
+            "expectedResult": "User should be redirect to the list page of loader configuration"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Loader configuration master page should be open"
+          },
+          {
+            "action": "Observe the changes on the loader master page",
+            "testData": "",
+            "expectedResult": "1.DB Related fields should be removed.\n2.Table name field should be removed.\n3. test connection button should be removed.\n4.Date format field should be non editable."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    },
+    {
+      "version": 3,
+      "savedAt": "2026-05-19T11:50:48.627Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify and check UI changes of loader master page.",
+        "priority": "High",
+        "status": "Review",
+        "testCategory": "Smoke",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page\n2.Data Source already configured.\n3.Data Stream already configured.",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Loader Configuration",
+            "testData": "",
+            "expectedResult": "User should be redirect to the list page of loader configuration"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Loader configuration master page should be open"
+          },
+          {
+            "action": "Observe the changes on the loader master page",
+            "testData": "",
+            "expectedResult": "1.DB Related fields should be removed.\n2.Table name field should be removed.\n3. test connection button should be removed.\n4.Date format field should be non editable."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": {
+          "id": "rtm-epic-1779084389111",
+          "title": "BFR-449"
+        },
+        "userStories": [
+          {
+            "id": "rtm-us-1779086568659",
+            "title": "BFR-463"
+          }
+        ]
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779086568659",
+      "title": "BFR-463"
+    }
+  ]
+}

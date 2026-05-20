@@ -23,6 +23,26 @@
           {
             "name": "Source point Configuration",
             "entities": []
+          },
+          {
+            "name": "File Parser",
+            "entities": []
+          },
+          {
+            "name": "File Property",
+            "entities": []
+          },
+          {
+            "name": "Down Stream",
+            "entities": []
+          },
+          {
+            "name": "Distributor",
+            "entities": []
+          },
+          {
+            "name": "File sequence",
+            "entities": []
           }
         ]
       },
@@ -30,22 +50,355 @@
         "name": "Rule Configuration",
         "subModules": [
           {
-            "name": "Filter Rule",
+            "name": "Filter Configuration",
+            "entities": []
+          },
+          {
+            "name": "Processing Configuration",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Transaction Management",
+        "subModules": [
+          {
+            "name": "Collector & Collection",
+            "entities": []
+          },
+          {
+            "name": "Parser",
+            "entities": []
+          },
+          {
+            "name": "Processing",
+            "entities": []
+          },
+          {
+            "name": "Distribution",
+            "entities": []
+          },
+          {
+            "name": "Record delete history",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "System Configuration",
+        "subModules": [
+          {
+            "name": "Notifiication Template",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Reports",
+        "subModules": [
+          {
+            "name": "Down Stream analysis report",
+            "entities": []
+          },
+          {
+            "name": "File sequence execution",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Dashboard",
+        "subModules": [
+          {
+            "name": "Dashboard",
             "entities": []
           }
         ]
       }
     ],
+    "versions": [
+      "1.0",
+      "2.0"
+    ],
     "members": [],
     "createdAt": "2026-03-29T20:50:01.587Z"
   },
   {
-    "id": "proj_1775451114706",
-    "name": "FMS",
-    "key": "BSS",
+    "id": "proj_1775580471737",
+    "name": "BSS Revenue Assurance",
+    "key": "BSSRA",
     "description": "",
-    "modules": [],
+    "modules": [
+      {
+        "name": "System Configuration",
+        "subModules": [
+          {
+            "name": "Data Source Configuration",
+            "entities": []
+          },
+          {
+            "name": "Notification Template",
+            "entities": []
+          },
+          {
+            "name": "Schedules",
+            "entities": []
+          },
+          {
+            "name": "Loader Configuration",
+            "entities": []
+          },
+          {
+            "name": "Collector Configuration",
+            "entities": []
+          },
+          {
+            "name": "System-Settings",
+            "entities": []
+          },
+          {
+            "name": "Reference Table Configuration",
+            "entities": []
+          },
+          {
+            "name": "GUI Maintenance",
+            "entities": []
+          },
+          {
+            "name": "Recon File Generator",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Reports",
+        "subModules": [
+          {
+            "name": "System Status Reports",
+            "entities": []
+          },
+          {
+            "name": "Custom Recon Table Report",
+            "entities": []
+          },
+          {
+            "name": "Maintenance Execution Status",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Data Analysis",
+        "subModules": [
+          {
+            "name": "Control Point",
+            "entities": []
+          },
+          {
+            "name": "Business Alert Configuration",
+            "entities": []
+          },
+          {
+            "name": "Business Alert Report",
+            "entities": []
+          },
+          {
+            "name": "Operational Alert Configuration",
+            "entities": []
+          },
+          {
+            "name": "Operational Alert Report",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Reconcilation Tools",
+        "subModules": [
+          {
+            "name": "Recon",
+            "entities": []
+          },
+          {
+            "name": "Reconciliation Status",
+            "entities": []
+          },
+          {
+            "name": "Recon Flow Builder",
+            "entities": []
+          },
+          {
+            "name": "Clone Recon Flow History",
+            "entities": []
+          },
+          {
+            "name": "Custom Recon Table",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Audit",
+        "subModules": [
+          {
+            "name": "Audits",
+            "entities": []
+          },
+          {
+            "name": "Audit Status",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Dashboard",
+        "subModules": [
+          {
+            "name": "Dashboard",
+            "entities": []
+          }
+        ]
+      }
+    ],
+    "versions": [
+      "v 3.0.0"
+    ],
     "members": [],
-    "createdAt": "2026-04-06T04:51:54.706Z"
+    "createdAt": "2026-04-07T16:47:51.737Z"
+  },
+  {
+    "id": "proj_1778134543474",
+    "name": "Fraud Management System",
+    "key": "BSSFMS",
+    "description": "",
+    "modules": [
+      {
+        "name": "Extraction & Load Layer",
+        "subModules": [
+          {
+            "name": "Column Configuration",
+            "entities": []
+          },
+          {
+            "name": "Watch List Configuration",
+            "entities": []
+          },
+          {
+            "name": "Data Source Configuration",
+            "entities": []
+          },
+          {
+            "name": "Element Configuration",
+            "entities": []
+          },
+          {
+            "name": "Data Stream Configuration",
+            "entities": []
+          },
+          {
+            "name": "Notification Template",
+            "entities": []
+          },
+          {
+            "name": "Schedules",
+            "entities": []
+          },
+          {
+            "name": "Loader Configuration",
+            "entities": []
+          },
+          {
+            "name": "Collector Configuration",
+            "entities": []
+          },
+          {
+            "name": "System Settings",
+            "entities": []
+          },
+          {
+            "name": "Record Coloring Configuration",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Event Management",
+        "subModules": [
+          {
+            "name": "Open Event",
+            "entities": []
+          },
+          {
+            "name": "My Event",
+            "entities": []
+          },
+          {
+            "name": "Close Event",
+            "entities": []
+          },
+          {
+            "name": "Archieved Event",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Intelligent Rule Management",
+        "subModules": [
+          {
+            "name": "Rule Configuration",
+            "entities": []
+          },
+          {
+            "name": "Fraud Tag Configuration",
+            "entities": []
+          },
+          {
+            "name": "Filter Configuration",
+            "entities": []
+          },
+          {
+            "name": "Reprocess Fraud Tag",
+            "entities": []
+          },
+          {
+            "name": "Subscription Rule Configuration",
+            "entities": []
+          },
+          {
+            "name": "Rule Test Feature",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Record View",
+        "subModules": [
+          {
+            "name": "Contro Point",
+            "entities": []
+          }
+        ]
+      },
+      {
+        "name": "Reports",
+        "subModules": [
+          {
+            "name": "360 Degree Customer View",
+            "entities": []
+          },
+          {
+            "name": "Systemm Status Report",
+            "entities": []
+          }
+        ]
+      }
+    ],
+    "versions": [
+      "",
+      "v 3.0.0"
+    ],
+    "members": [],
+    "createdAt": "2026-05-07T06:15:43.474Z"
   }
 ]

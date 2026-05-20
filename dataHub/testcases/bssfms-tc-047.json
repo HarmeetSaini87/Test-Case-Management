@@ -1,0 +1,170 @@
+{
+  "testCaseId": "BSSFMS-TC-047",
+  "title": "Verify and check search functionality on Control point.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Record View",
+  "subModule": "Contro Point",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Record View -> Control Point",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the search icon",
+      "testData": "",
+      "expectedResult": "Search panel should be open"
+    },
+    {
+      "action": "Try to filter data data based on the field and click on the search button",
+      "testData": "",
+      "expectedResult": "Data should be filter out based on the field."
+    },
+    {
+      "action": "Click on the reset button",
+      "testData": "",
+      "expectedResult": "Search field parameter field should be removed."
+    },
+    {
+      "action": "Click on the cancel button",
+      "testData": "",
+      "expectedResult": "Search panel should be close."
+    },
+    {
+      "action": "Click on the refresh button",
+      "testData": "",
+      "expectedResult": "Filtered data should be removed."
+    }
+  ],
+  "createdDate": "2026-05-14T07:16:01.993Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T11:51:53.779Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-14T07:16:01.993Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify and check search functionality on Control point.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Record View -> Control Point",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the search icon",
+            "testData": "",
+            "expectedResult": "Search panel should be open"
+          },
+          {
+            "action": "Try to filter data data based on the field and click on the search button",
+            "testData": "",
+            "expectedResult": "Data should be filter out based on the field."
+          },
+          {
+            "action": "Click on the reset button",
+            "testData": "",
+            "expectedResult": "Search field parameter field should be removed."
+          },
+          {
+            "action": "Click on the cancel button",
+            "testData": "",
+            "expectedResult": "Search panel should be close."
+          },
+          {
+            "action": "Click on the refresh button",
+            "testData": "",
+            "expectedResult": "Filtered data should be removed."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify and check search functionality on Control point.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Record View -> Control Point",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the search icon",
+            "testData": "",
+            "expectedResult": "Search panel should be open"
+          },
+          {
+            "action": "Try to filter data data based on the field and click on the search button",
+            "testData": "",
+            "expectedResult": "Data should be filter out based on the field."
+          },
+          {
+            "action": "Click on the reset button",
+            "testData": "",
+            "expectedResult": "Search field parameter field should be removed."
+          },
+          {
+            "action": "Click on the cancel button",
+            "testData": "",
+            "expectedResult": "Search panel should be close."
+          },
+          {
+            "action": "Click on the refresh button",
+            "testData": "",
+            "expectedResult": "Filtered data should be removed."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779085296119",
+      "title": "BFR-464"
+    }
+  ]
+}

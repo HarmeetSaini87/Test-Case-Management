@@ -1,0 +1,125 @@
+{
+  "testCaseId": "BSSFMS-TC-011",
+  "title": "List Page - Verify that for the subscription column it should not be non editable.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "On list page click on the subscription column name",
+      "testData": "",
+      "expectedResult": "Master page should be open"
+    },
+    {
+      "action": "Try to edit fields on master page",
+      "testData": "",
+      "expectedResult": "User should not alowed."
+    }
+  ],
+  "createdDate": "2026-05-08T04:43:27.081Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:26:16.302Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-08T04:43:27.081Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that for the subscription column it should not be non editable.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "On list page click on the subscription column name",
+            "testData": "",
+            "expectedResult": "Master page should be open"
+          },
+          {
+            "action": "Try to edit fields on master page",
+            "testData": "",
+            "expectedResult": "User should not alowed."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Lis Page - Verify that for the subscription column it should not be non editable.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "On list page click on the subscription column name",
+            "testData": "",
+            "expectedResult": "Master page should be open"
+          },
+          {
+            "action": "Try to edit fields on master page",
+            "testData": "",
+            "expectedResult": "User should not alowed."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084494027",
+      "title": "BFR-440"
+    }
+  ]
+}

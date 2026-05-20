@@ -1,0 +1,58 @@
+{
+  "testCaseId": "BSSRA-TC-013",
+  "title": "Verify that after making changes to the reconciliation File Generator configuration, the file is generated at the configured destination path based on the updated configuration.",
+  "objective": "",
+  "description": "",
+  "project": "BSSRA",
+  "module": "System Configuration",
+  "subModule": "Recon File Generator",
+  "entity": "",
+  "priority": "High",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "",
+  "labels": [],
+  "preconditions": "1)User must login with valid credentials.\n2)Application connectivity must be there with connection type(SCP, FTP & File system).\n3)Recon should run successfully.\n4)Recon file generator configuration must be done.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "go to System setting->Recon file generator.",
+      "testData": "",
+      "expectedResult": "Recon file generator list page should display."
+    },
+    {
+      "action": "click on hyperlink of configuration",
+      "testData": "",
+      "expectedResult": "Recon file generator Master page should display."
+    },
+    {
+      "action": "add the field through fields dropdown and click on save button.",
+      "testData": "",
+      "expectedResult": "Record should save successfully."
+    },
+    {
+      "action": "After recon run successfully go to configured the destination path",
+      "testData": "",
+      "expectedResult": "user should on destination path."
+    },
+    {
+      "action": "verify file generate or not.",
+      "testData": "",
+      "expectedResult": "file should generate."
+    },
+    {
+      "action": "Open & verify file  having correct data .",
+      "testData": "",
+      "expectedResult": "data should be correct."
+    }
+  ],
+  "createdDate": "2026-05-07T10:03:52.358Z",
+  "createdBy": "Roshan",
+  "updatedDate": "2026-05-07T10:03:52.358Z",
+  "updatedBy": "Roshan",
+  "version": 1,
+  "history": []
+}

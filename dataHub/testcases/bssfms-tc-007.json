@@ -1,0 +1,178 @@
+{
+  "testCaseId": "BSSFMS-TC-007",
+  "title": "List Page - Verify Pagination functionality on Column Configuration – List Page.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Review",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Now change the record per page count",
+      "testData": "",
+      "expectedResult": "Based on the pagination grid should be updated"
+    },
+    {
+      "action": "Click on the next button",
+      "testData": "",
+      "expectedResult": "User should be redirect to the next page"
+    },
+    {
+      "action": "Click on the previous button",
+      "testData": "",
+      "expectedResult": "User should be redirect to the previous page."
+    }
+  ],
+  "createdDate": "2026-05-07T09:03:41.817Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:23:15.769Z",
+  "updatedBy": "Jayraj",
+  "version": 4,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-07T09:03:41.817Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify Pagination functionality on Column Configuration – List Page.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Now change the record per page count",
+            "testData": "",
+            "expectedResult": "Based on the pagination grid should be updated"
+          },
+          {
+            "action": "Click on the next button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the next page"
+          },
+          {
+            "action": "Click on the previous button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the previous page."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-07T09:06:29.602Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify Pagination functionality on Column Configuration – List Page.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Now change the record per page count",
+            "testData": "",
+            "expectedResult": "Based on the pagination grid should be updated"
+          },
+          {
+            "action": "Click on the next button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the next page"
+          },
+          {
+            "action": "Click on the previous button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the previous page."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 3,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "List Page - Verify Pagination functionality on Column Configuration – List Page.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Now change the record per page count",
+            "testData": "",
+            "expectedResult": "Based on the pagination grid should be updated"
+          },
+          {
+            "action": "Click on the next button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the next page"
+          },
+          {
+            "action": "Click on the previous button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the previous page."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084494027",
+      "title": "BFR-440"
+    }
+  ]
+}

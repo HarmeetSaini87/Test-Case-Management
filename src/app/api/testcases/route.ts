@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+export const dynamic = "force-dynamic";
 
 function getPath() {
   const p = path.join(process.cwd(), "dataHub", "testcases");
@@ -11,17 +12,21 @@ function getPath() {
 function nextId(dir: string, projectKey: string): string {
   const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
   const nums: number[] = [];
+  const prefix = `${projectKey}-TC-`;
   files.forEach(f => {
     try {
       const tc = JSON.parse(fs.readFileSync(path.join(dir, f), "utf-8"));
-      if (tc.testCaseId) {
-        const parts = tc.testCaseId.split("-TC-");
-        if (parts.length === 2) nums.push(parseInt(parts[1], 10));
+      if (tc.testCaseId && tc.testCaseId.startsWith(prefix)) {
+        const parts = tc.testCaseId.split(prefix);
+        if (parts.length === 2) {
+          const num = parseInt(parts[1], 10);
+          if (!isNaN(num)) nums.push(num);
+        }
       }
     } catch {}
   });
   const next = nums.length > 0 ? Math.max(...nums) + 1 : 1;
-  return `${projectKey}-TC-${String(next).padStart(3, "0")}`;
+  return `${prefix}${String(next).padStart(3, "0")}`;
 }
 
 export async function GET(req: Request) {
@@ -59,6 +64,23 @@ export async function POST(req: Request) {
     const body = await req.json();
     if (!body.title) return NextResponse.json({ success: false, error: "Title is required" }, { status: 400 });
 
+    // RTM Referential Integrity Validation
+    if (body.epic && body.epic.id) {
+      const { ValidationService } = await import("@/lib/rtm/services/validationService");
+      if (!ValidationService.validateEpicExists(body.epic.id)) {
+        return NextResponse.json({ success: false, error: "Referential Integrity Error: Epic ID does not exist in catalog." }, { status: 400 });
+      }
+    }
+
+    if (body.userStories && Array.isArray(body.userStories) && body.userStories.length > 0) {
+      const { ValidationService } = await import("@/lib/rtm/services/validationService");
+      const storyIds = body.userStories.map((us: any) => us.id);
+      if (!ValidationService.validateStoriesExist(storyIds)) {
+        return NextResponse.json({ success: false, error: "Referential Integrity Error: One or more User Story IDs do not exist in catalog." }, { status: 400 });
+      }
+    }
+
+
     const dir = getPath();
     const now = new Date().toISOString();
 
@@ -80,6 +102,8 @@ export async function POST(req: Request) {
           testIntent: existing.testIntent, preconditions: existing.preconditions,
           steps: existing.steps, description: existing.description,
           assignedTester: existing.assignedTester,
+          epic: existing.epic || null,
+          userStories: existing.userStories ?? []
         },
       };
 
@@ -89,6 +113,8 @@ export async function POST(req: Request) {
         ...existing,
         ...body,
         assignedTester: body.assignedTester ?? existing.assignedTester ?? "",
+        epic: body.epic !== undefined ? body.epic : existing.epic || null,
+        userStories: body.userStories ?? existing.userStories ?? [],
         updatedDate: now,
         updatedBy: body.updatedBy || "admin",
         createdDate: existing.createdDate || now,
@@ -121,6 +147,8 @@ export async function POST(req: Request) {
         preconditions: body.preconditions || "",
         estimatedTime: body.estimatedTime || "",
         steps: body.steps || [],
+        epic: body.epic || null,
+        userStories: body.userStories || [],
         createdDate: now,
         createdBy: body.createdBy || "admin",
         updatedDate: now,

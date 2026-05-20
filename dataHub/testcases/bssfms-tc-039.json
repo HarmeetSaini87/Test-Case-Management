@@ -1,0 +1,165 @@
+{
+  "testCaseId": "BSSFMS-TC-039",
+  "title": "Verify that user should be able to configured new field \"Query Field\" in master page.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Data Source Configuration",
+  "entity": "",
+  "priority": "High",
+  "status": "Active",
+  "testCategory": "Smoke",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.User should be on home page of FMS\n2.Column configuration already done.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Data Source Configuration ",
+      "testData": "",
+      "expectedResult": "Data Source Configuration list page should be open"
+    },
+    {
+      "action": "Click on the + button",
+      "testData": "",
+      "expectedResult": "Data Source Configuration master page should be open"
+    },
+    {
+      "action": "Enter the mandatory fields",
+      "testData": "Data Source :- Test\nMongoDB TableName :- Tblmsttest\nData Source Type :- Usage or Subscription",
+      "expectedResult": "Data should be entered"
+    },
+    {
+      "action": "Select the fields from the drop down",
+      "testData": "",
+      "expectedResult": "Fields should be selected successfully."
+    },
+    {
+      "action": "Select the Query Field from the drop down (Single selection)",
+      "testData": "",
+      "expectedResult": "Query Field should be selected"
+    }
+  ],
+  "createdDate": "2026-05-13T09:33:18.958Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T12:36:28.886Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that user should be able to configured new field \"Query Field\" in master page.",
+        "priority": "High",
+        "status": "Review",
+        "testCategory": "Smoke",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on home page of FMS\n2.Column configuration already done.",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Data Source Configuration ",
+            "testData": "",
+            "expectedResult": "Data Source Configuration list page should be open"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Data Source Configuration master page should be open"
+          },
+          {
+            "action": "Enter the mandatory fields",
+            "testData": "Data Source :- Test\nMongoDB TableName :- Tblmsttest\nData Source Type :- Usage or Subscription",
+            "expectedResult": "Data should be entered"
+          },
+          {
+            "action": "Select the fields from the drop down",
+            "testData": "",
+            "expectedResult": "Fields should be selected successfully."
+          },
+          {
+            "action": "Select the Query Field from the drop down (Single selection)",
+            "testData": "",
+            "expectedResult": "Query Field should be selected"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-19T11:45:59.334Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that user should be able to configured new field \"Query Field\" in master page.",
+        "priority": "High",
+        "status": "Review",
+        "testCategory": "Smoke",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on home page of FMS\n2.Column configuration already done.",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Data Source Configuration ",
+            "testData": "",
+            "expectedResult": "Data Source Configuration list page should be open"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Data Source Configuration master page should be open"
+          },
+          {
+            "action": "Enter the mandatory fields",
+            "testData": "Data Source :- Test\nMongoDB TableName :- Tblmsttest\nData Source Type :- Usage or Subscription",
+            "expectedResult": "Data should be entered"
+          },
+          {
+            "action": "Select the fields from the drop down",
+            "testData": "",
+            "expectedResult": "Fields should be selected successfully."
+          },
+          {
+            "action": "Select the Query Field from the drop down (Single selection)",
+            "testData": "",
+            "expectedResult": "Query Field should be selected"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": {
+          "id": "rtm-epic-1779084389111",
+          "title": "BFR-449"
+        },
+        "userStories": [
+          {
+            "id": "rtm-us-1779086535323",
+            "title": "BFR-450"
+          }
+        ]
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779086535323",
+      "title": "BFR-450"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "testCaseId": "BSSFMS-TC-046",
+  "title": "Verify content on list page of Control point.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Record View",
+  "subModule": "Contro Point",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Review",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.User should be on home page of FMS.\n2.Collection already  created in mongodb with data. ",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "1.Go to Record View -> Control Point",
+      "testData": "",
+      "expectedResult": "User should be redirect to the list page"
+    },
+    {
+      "action": "Observe the content on list page",
+      "testData": "",
+      "expectedResult": "Grid Include\n- Sr No\n- Table Name\n- Data Source Type\n- Data Source Name\n- Created By\n- Created On\n\nButton\n- Search\n- Column Settings\n- Refresh"
+    }
+  ],
+  "createdDate": "2026-05-14T07:13:35.544Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T11:51:27.522Z",
+  "updatedBy": "Jayraj",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify content on list page of Control point.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on home page of FMS.\n2.Collection already  created in mongodb with data. ",
+        "steps": [
+          {
+            "action": "1.Go to Record View -> Control Point",
+            "testData": "",
+            "expectedResult": "User should be redirect to the list page"
+          },
+          {
+            "action": "Observe the content on list page",
+            "testData": "",
+            "expectedResult": "Grid Include\n- Sr No\n- Table Name\n- Data Source Type\n- Data Source Name\n- Created By\n- Created On\n\nButton\n- Search\n- Column Settings\n- Refresh"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779085296119",
+      "title": "BFR-464"
+    }
+  ]
+}

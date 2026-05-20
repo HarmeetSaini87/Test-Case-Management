@@ -1,0 +1,208 @@
+{
+  "testCaseId": "BSSFMS-TC-044",
+  "title": "Verify that if user select Data source type is subscription than  \"Query Field\" should be removed.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Data Source Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.User should be on the home page of FMS.\n2.Column configuration should be done already.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "1.Extraction & Load Layer -> Data Source Configuration",
+      "testData": "",
+      "expectedResult": "Data Source Configuration list page should be open"
+    },
+    {
+      "action": "Click on the + button",
+      "testData": "",
+      "expectedResult": "Add Data Source page should be open"
+    },
+    {
+      "action": "Enter all the mandatory details",
+      "testData": "Data Source - Test\nMongoDB TableName - Test\nData Source Type :- Subscription",
+      "expectedResult": "Details should be added "
+    },
+    {
+      "action": "Select the Fields from the drop down",
+      "testData": "",
+      "expectedResult": "Field should be added"
+    },
+    {
+      "action": "Observe the query field",
+      "testData": "",
+      "expectedResult": "Query Field should be removed"
+    }
+  ],
+  "createdDate": "2026-05-14T05:43:57.289Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T11:50:29.828Z",
+  "updatedBy": "Jayraj",
+  "version": 4,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-14T05:43:57.289Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if user select Data source type is subscription than  \"Query Field\" should be removed.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page of FMS.\n2.Column configuration should be done already.",
+        "steps": [
+          {
+            "action": "1.Extraction & Load Layer -> Data Source Configuration",
+            "testData": "",
+            "expectedResult": "Data Source Configuration list page should be open"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Add Data Source page should be open"
+          },
+          {
+            "action": "Enter all the mandatory details",
+            "testData": "Data Source - Test\nMongoDB TableName - Test\nData Source Type :- Subscription",
+            "expectedResult": "Details should be added "
+          },
+          {
+            "action": "Select the Fields from the drop down",
+            "testData": "",
+            "expectedResult": "Field should be added"
+          },
+          {
+            "action": "Observe the query field",
+            "testData": "",
+            "expectedResult": "Query Field should be removed"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if user select Data source type is subscription than  \"Query Field\" should be removed.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page of FMS.\n2.Column configuration should be done already.",
+        "steps": [
+          {
+            "action": "1.Extraction & Load Layer -> Data Source Configuration",
+            "testData": "",
+            "expectedResult": "Data Source Configuration list page should be open"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Add Data Source page should be open"
+          },
+          {
+            "action": "Enter all the mandatory details",
+            "testData": "Data Source - Test\nMongoDB TableName - Test\nData Source Type :- Subscription",
+            "expectedResult": "Details should be added "
+          },
+          {
+            "action": "Select the Fields from the drop down",
+            "testData": "",
+            "expectedResult": "Field should be added"
+          },
+          {
+            "action": "Observe the query field",
+            "testData": "",
+            "expectedResult": "Query Field should be removed"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    },
+    {
+      "version": 3,
+      "savedAt": "2026-05-19T11:47:54.669Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if user select Data source type is subscription than  \"Query Field\" should be removed.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page of FMS.\n2.Column configuration should be done already.",
+        "steps": [
+          {
+            "action": "1.Extraction & Load Layer -> Data Source Configuration",
+            "testData": "",
+            "expectedResult": "Data Source Configuration list page should be open"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Add Data Source page should be open"
+          },
+          {
+            "action": "Enter all the mandatory details",
+            "testData": "Data Source - Test\nMongoDB TableName - Test\nData Source Type :- Subscription",
+            "expectedResult": "Details should be added "
+          },
+          {
+            "action": "Select the Fields from the drop down",
+            "testData": "",
+            "expectedResult": "Field should be added"
+          },
+          {
+            "action": "Observe the query field",
+            "testData": "",
+            "expectedResult": "Query Field should be removed"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": {
+          "id": "rtm-epic-1779084389111",
+          "title": "BFR-449"
+        },
+        "userStories": [
+          {
+            "id": "rtm-us-1779086535323",
+            "title": "BFR-450"
+          }
+        ]
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779086535323",
+      "title": "BFR-450"
+    }
+  ]
+}

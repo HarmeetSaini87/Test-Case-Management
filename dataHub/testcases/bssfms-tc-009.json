@@ -1,0 +1,125 @@
+{
+  "testCaseId": "BSSFMS-TC-009",
+  "title": "List Page - Verify Column Settings functionality on Column Configuration – List Page.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Review",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the column setting icon",
+      "testData": "",
+      "expectedResult": "Column setting pop up window should be open"
+    },
+    {
+      "action": "Change the sequence of the column and click on the save button",
+      "testData": "",
+      "expectedResult": "Pop up window should be close and the column sequence should be changed based on the configuration"
+    }
+  ],
+  "createdDate": "2026-05-07T09:35:40.716Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:24:04.913Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-07T09:35:40.716Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify Column Settings functionality on Column Configuration – List Page.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the column setting icon",
+            "testData": "",
+            "expectedResult": "Column setting pop up window should be open"
+          },
+          {
+            "action": "Change the sequence of the column and click on the save button",
+            "testData": "",
+            "expectedResult": "Pop up window should be close and the column sequence should be changed based on the configuration"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "List Page - Verify Column Settings functionality on Column Configuration – List Page.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the column setting icon",
+            "testData": "",
+            "expectedResult": "Column setting pop up window should be open"
+          },
+          {
+            "action": "Change the sequence of the column and click on the save button",
+            "testData": "",
+            "expectedResult": "Pop up window should be close and the column sequence should be changed based on the configuration"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084494027",
+      "title": "BFR-440"
+    }
+  ]
+}

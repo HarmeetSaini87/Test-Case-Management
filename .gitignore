@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# backups and local test tools
+*.bak
+.next-dev/
+build_out.txt
+dataHub_backup_before_reindex/
+rebuild-prod.log
+

@@ -1,0 +1,260 @@
+{
+  "testCaseId": "BSSFMS-TC-014",
+  "title": "Master Page - Verify that user should be able to configured the multiple usage column.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the + button",
+      "testData": "",
+      "expectedResult": "User should redirect to the master page"
+    },
+    {
+      "action": "Enter the column name",
+      "testData": "",
+      "expectedResult": "Column name should be added"
+    },
+    {
+      "action": "Select the column data type from the drop down",
+      "testData": "",
+      "expectedResult": "Column data type should be selected"
+    },
+    {
+      "action": "Click on the save button",
+      "testData": "",
+      "expectedResult": "Record should be saved and validation message populate for the same"
+    },
+    {
+      "action": "Change the column name ",
+      "testData": "",
+      "expectedResult": "column name should be changed"
+    },
+    {
+      "action": "click on the refresh button",
+      "testData": "",
+      "expectedResult": "updated name should removed and saved name should be visible"
+    },
+    {
+      "action": "Click on the add button ",
+      "testData": "",
+      "expectedResult": "new row should be added in the grid"
+    },
+    {
+      "action": "Enter the column name",
+      "testData": "",
+      "expectedResult": "Column name should be added"
+    },
+    {
+      "action": "Select the column data type from the drop down",
+      "testData": "",
+      "expectedResult": "Column data type should be selected"
+    },
+    {
+      "action": "Click on the save button",
+      "testData": "",
+      "expectedResult": "Record should be saved and validation message populate for the same"
+    },
+    {
+      "action": "click on the back button",
+      "testData": "",
+      "expectedResult": "user should be redirect to the list page"
+    }
+  ],
+  "createdDate": "2026-05-08T05:55:09.752Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:32:14.021Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-08T05:55:09.752Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Master Page - Verify that user should be able to configured the usage column.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "User should redirect to the master page"
+          },
+          {
+            "action": "Enter the column name",
+            "testData": "",
+            "expectedResult": "Column name should be added"
+          },
+          {
+            "action": "Select the column data type from the drop down",
+            "testData": "",
+            "expectedResult": "Column data type should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Record should be saved and validation message populate for the same"
+          },
+          {
+            "action": "Change the column name ",
+            "testData": "",
+            "expectedResult": "column name should be changed"
+          },
+          {
+            "action": "click on the refresh button",
+            "testData": "",
+            "expectedResult": "updated name should removed and saved name should be visible"
+          },
+          {
+            "action": "Click on the add button ",
+            "testData": "",
+            "expectedResult": "new row should be added in the grid"
+          },
+          {
+            "action": "Enter the column name",
+            "testData": "",
+            "expectedResult": "Column name should be added"
+          },
+          {
+            "action": "Select the column data type from the drop down",
+            "testData": "",
+            "expectedResult": "Column data type should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Record should be saved and validation message populate for the same"
+          },
+          {
+            "action": "click on the back button",
+            "testData": "",
+            "expectedResult": "user should be redirect to the list page"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Master Page - Verify that user should be able to configured the multiple usage column.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "User should redirect to the master page"
+          },
+          {
+            "action": "Enter the column name",
+            "testData": "",
+            "expectedResult": "Column name should be added"
+          },
+          {
+            "action": "Select the column data type from the drop down",
+            "testData": "",
+            "expectedResult": "Column data type should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Record should be saved and validation message populate for the same"
+          },
+          {
+            "action": "Change the column name ",
+            "testData": "",
+            "expectedResult": "column name should be changed"
+          },
+          {
+            "action": "click on the refresh button",
+            "testData": "",
+            "expectedResult": "updated name should removed and saved name should be visible"
+          },
+          {
+            "action": "Click on the add button ",
+            "testData": "",
+            "expectedResult": "new row should be added in the grid"
+          },
+          {
+            "action": "Enter the column name",
+            "testData": "",
+            "expectedResult": "Column name should be added"
+          },
+          {
+            "action": "Select the column data type from the drop down",
+            "testData": "",
+            "expectedResult": "Column data type should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Record should be saved and validation message populate for the same"
+          },
+          {
+            "action": "click on the back button",
+            "testData": "",
+            "expectedResult": "user should be redirect to the list page"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084521257",
+      "title": "BFR-441"
+    }
+  ]
+}

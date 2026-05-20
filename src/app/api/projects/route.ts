@@ -37,6 +37,7 @@ export async function POST(req: Request) {
       key: body.key?.toUpperCase(),
       description: body.description || "",
       modules: body.modules || [],
+      versions: body.versions || [],
       members: body.members || [],
       createdAt: new Date().toISOString(),
     };

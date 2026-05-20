@@ -1,0 +1,43 @@
+{
+  "testCaseId": "BSSRA-TC-004",
+  "title": "Recon File Generator->Verify Allowed Flow Components",
+  "objective": "",
+  "description": "",
+  "project": "BSSRA",
+  "module": "System Configuration",
+  "subModule": "Recon File Generator",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Smoke",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "",
+  "labels": [],
+  "preconditions": "",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to System configuration → Recon file generator\n",
+      "testData": "",
+      "expectedResult": "List page should appear"
+    },
+    {
+      "action": "Click on “+” icon\n",
+      "testData": "",
+      "expectedResult": "Master page should appear"
+    },
+    {
+      "action": "Open Flow Component dropdown\n",
+      "testData": "",
+      "expectedResult": "Only below options should be visible:\nJoin\nAggregation\nCustom Query\nRevenue Calculation"
+    }
+  ],
+  "createdDate": "2026-05-04T12:48:43.939Z",
+  "createdBy": "Roshan",
+  "updatedDate": "2026-05-04T12:48:43.939Z",
+  "updatedBy": "Roshan",
+  "version": 1,
+  "history": []
+}

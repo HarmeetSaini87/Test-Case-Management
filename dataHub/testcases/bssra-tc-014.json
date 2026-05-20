@@ -1,0 +1,38 @@
+{
+  "testCaseId": "BSSRA-TC-014",
+  "title": "Reports->Verify user can select File Generator in the Task Type dropdown & respective reports only appear.",
+  "objective": "",
+  "description": "",
+  "project": "BSSRA",
+  "module": "Reports",
+  "subModule": "System Status Reports",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Smoke",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "",
+  "labels": [],
+  "preconditions": "",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Report",
+      "testData": "",
+      "expectedResult": "Report list page should open."
+    },
+    {
+      "action": "Select  file generator as a Task type ",
+      "testData": "",
+      "expectedResult": "File generator cords only appear."
+    }
+  ],
+  "createdDate": "2026-05-07T13:34:26.939Z",
+  "createdBy": "Roshan",
+  "updatedDate": "2026-05-07T13:34:26.939Z",
+  "updatedBy": "Roshan",
+  "version": 1,
+  "history": []
+}

@@ -1,0 +1,158 @@
+{
+  "testCaseId": "BSSFMS-TC-021",
+  "title": "Import - Verify that user should be able to configure multiple columns in bulk by using import functionality.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "High",
+  "status": "Active",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the import button",
+      "testData": "",
+      "expectedResult": "Pop up window for file upload should open"
+    },
+    {
+      "action": "Select the file and click on the upload button",
+      "testData": "",
+      "expectedResult": "File should be upload successfully and uploaded column should be display in the list"
+    }
+  ],
+  "createdDate": "2026-05-11T12:08:34.770Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T10:05:48.786Z",
+  "updatedBy": "Jayraj",
+  "version": 4,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-11T12:08:34.770Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that user should be able to configure multiple columns in bulk by using import functionality.",
+        "priority": "High",
+        "status": "Active",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the import button",
+            "testData": "",
+            "expectedResult": "Pop up window for file upload should open"
+          },
+          {
+            "action": "Select the file and click on the upload button",
+            "testData": "",
+            "expectedResult": "File should be upload successfully and uploaded column should be display in the list"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-11T12:31:45.735Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that user should be able to configure multiple columns in bulk by using import functionality.",
+        "priority": "High",
+        "status": "Active",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the import button",
+            "testData": "",
+            "expectedResult": "Pop up window for file upload should open"
+          },
+          {
+            "action": "Select the file and click on the upload button",
+            "testData": "",
+            "expectedResult": "File should be upload successfully and uploaded column should be display in the list"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 3,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Import - Verify that user should be able to configure multiple columns in bulk by using import functionality.",
+        "priority": "High",
+        "status": "Active",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the import button",
+            "testData": "",
+            "expectedResult": "Pop up window for file upload should open"
+          },
+          {
+            "action": "Select the file and click on the upload button",
+            "testData": "",
+            "expectedResult": "File should be upload successfully and uploaded column should be display in the list"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084546576",
+      "title": "BFR-442"
+    }
+  ]
+}

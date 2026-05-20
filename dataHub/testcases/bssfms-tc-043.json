@@ -1,0 +1,152 @@
+{
+  "testCaseId": "BSSFMS-TC-043",
+  "title": "Verify that Query Field should be auto populate in data stream in non editable field.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Data Stream Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.User should be on the home page of FMS.\n2.Column configuration should be done already.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "1.Extraction & Load Layer -> Data Source Configuration",
+      "testData": "",
+      "expectedResult": "Data Source Configuration list page should be open"
+    },
+    {
+      "action": "Click on the + button",
+      "testData": "",
+      "expectedResult": "Add Data Source page should be open"
+    },
+    {
+      "action": "Enter all the mandatory details",
+      "testData": "Data Source - Test\nMongoDB TableName - Test\nData Source Type :- Usage or Subscription",
+      "expectedResult": "Details should be added "
+    },
+    {
+      "action": "Select the Fields from the drop down",
+      "testData": "",
+      "expectedResult": "Field should be added"
+    },
+    {
+      "action": "Select the Query Field from the drop down (Single selection)",
+      "testData": "",
+      "expectedResult": "Query Field should be selected"
+    },
+    {
+      "action": "Click on the save button",
+      "testData": "",
+      "expectedResult": "Record should be saved successfully."
+    },
+    {
+      "action": "Go to Extraction & Load Layer -> Data Stream Configuration",
+      "testData": "",
+      "expectedResult": "Data stream list page should be open"
+    },
+    {
+      "action": "Click on the + button\n",
+      "testData": "",
+      "expectedResult": "Data stream Master page should open"
+    },
+    {
+      "action": "Select the data source which configured above ",
+      "testData": "",
+      "expectedResult": "Query Field should be auto populate  in non editable field."
+    }
+  ],
+  "createdDate": "2026-05-13T09:47:26.229Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T11:48:15.177Z",
+  "updatedBy": "Jayraj",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that Query Field should be auto populate in data stream in non editable field.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.User should be on the home page of FMS.\n2.Column configuration should be done already.",
+        "steps": [
+          {
+            "action": "1.Extraction & Load Layer -> Data Source Configuration",
+            "testData": "",
+            "expectedResult": "Data Source Configuration list page should be open"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "Add Data Source page should be open"
+          },
+          {
+            "action": "Enter all the mandatory details",
+            "testData": "Data Source - Test\nMongoDB TableName - Test\nData Source Type :- Usage or Subscription",
+            "expectedResult": "Details should be added "
+          },
+          {
+            "action": "Select the Fields from the drop down",
+            "testData": "",
+            "expectedResult": "Field should be added"
+          },
+          {
+            "action": "Select the Query Field from the drop down (Single selection)",
+            "testData": "",
+            "expectedResult": "Query Field should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Record should be saved successfully."
+          },
+          {
+            "action": "Go to Extraction & Load Layer -> Data Stream Configuration",
+            "testData": "",
+            "expectedResult": "Data stream list page should be open"
+          },
+          {
+            "action": "Click on the + button\n",
+            "testData": "",
+            "expectedResult": "Data stream Master page should open"
+          },
+          {
+            "action": "Select the data source which configured above ",
+            "testData": "",
+            "expectedResult": "Query Field should be auto populate  in non editable field."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779086535323",
+      "title": "BFR-450"
+    }
+  ]
+}

@@ -4,18 +4,20 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Plus, Trash2, Save, FileText,
-  MoveUp, MoveDown, Tag, X
+  MoveUp, MoveDown, Tag, X, Link2
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import TopNav from "../../components/TopNav";
 import { useProject } from "../../components/ProjectContext";
 
 const EMPTY_TC = {
-  title: "", objective: "", description: "", project: "", module: "", subModule: "", entity: "",
+  title: "", objective: "", description: "", project: "", versionNumbers: [] as string[], module: "", subModule: "", entity: "",
   priority: "Medium", status: "Draft", testCategory: "", testingType: "",
   testIntent: "", automationType: "Not Automated", labels: [] as string[],
   preconditions: "", estimatedTime: "",
   steps: [] as { action: string; testData: string; expectedResult: string }[],
+  epic: null as { id: string; title: string } | null,
+  userStories: [] as { id: string; title: string }[]
 };
 
 export default function NewTestCasePage() {
@@ -27,6 +29,9 @@ export default function NewTestCasePage() {
   const [currentUser, setCurrentUser] = useState("admin");
   const [saving, setSaving] = useState(false);
   const [newLabel, setNewLabel] = useState("");
+  
+  const [epics, setEpics] = useState<any[]>([]);
+  const [stories, setStories] = useState<any[]>([]);
 
   useEffect(() => {
     fetch("/api/projects").then(r => r.json()).then(d => { if (d.success) setProjects(d.projects); });
@@ -35,8 +40,27 @@ export default function NewTestCasePage() {
       if (d.success) setCurrentUser(d.user?.username || "admin");
     });
     // Set project context if available
-    if (activeProject) setForm(f => ({ ...f, project: activeProject }));
+    if (activeProject && activeProject !== "ALL") {
+      setForm(f => ({ ...f, project: activeProject }));
+    } else {
+      setForm(f => ({ ...f, project: "" }));
+    }
   }, [activeProject]);
+
+  useEffect(() => {
+    if (form.project) {
+      fetch(`/api/rtm/epics?projectId=${form.project}`)
+        .then(r => r.json())
+        .then(d => { if (d.success) setEpics(d.epics); });
+
+      fetch(`/api/rtm/stories?projectId=${form.project}`)
+        .then(r => r.json())
+        .then(d => { if (d.success) setStories(d.stories); });
+    } else {
+      setEpics([]);
+      setStories([]);
+    }
+  }, [form.project]);
 
   const selectedProject = projects.find((p: any) => p.key === form.project);
   const modules = selectedProject?.modules || [];
@@ -70,6 +94,18 @@ export default function NewTestCasePage() {
       alert("Please select a Project from the top dropdown before saving.");
       return;
     }
+
+    // MANDATORY FIELD VALIDATION
+    if (!(form as any).versionNumbers || (form as any).versionNumbers.length === 0) { alert("At least one Applicable Version is required"); return; }
+    if (!form.module) { alert("Module is required"); return; }
+    if (!form.subModule) { alert("Sub-Module is required"); return; }
+    if (!form.priority) { alert("Priority is required"); return; }
+    if (!form.status) { alert("Status is required"); return; }
+    if (!form.testCategory) { alert("Test Category is required"); return; }
+    if (!form.testingType) { alert("Testing Type is required"); return; }
+    if (!form.testIntent) { alert("Test Intent is required"); return; }
+    if (!form.epic || !form.epic.id) { alert("Linked Epic is required for traceability"); return; }
+    if (!form.userStories || form.userStories.length === 0) { alert("At least one Linked User Story is required for traceability"); return; }
 
     // 1. Prune empty steps first
     const prunedSteps = (form.steps || []).filter((s: any) => s.action.trim() || s.expectedResult.trim());
@@ -167,10 +203,65 @@ export default function NewTestCasePage() {
             {/* Classification */}
             <div className="section-card">
               <div className="section-header">📁 Classification & Metadata</div>
-              <input type="hidden" value={activeProject} />
               <div style={{ padding: "16px 20px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+                <div style={{ gridColumn: "span 3" }}>
+                  <label className="form-label">Project <span style={{ color: "#ef4444" }}>*</span></label>
+                  <select
+                    value={form.project}
+                    onChange={e => {
+                      const p = e.target.value;
+                      setForm(f => ({
+                        ...f,
+                        project: p,
+                        versionNumbers: [],
+                        module: "",
+                        subModule: "",
+                        entity: "",
+                        epic: null,
+                        userStories: []
+                      }));
+                    }}
+                    style={selectStyle}
+                  >
+                    <option value="">— Select Project —</option>
+                    {projects.map((p: any) => (
+                      <option key={p.key} value={p.key}>
+                        {p.key} - {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div style={{ gridColumn: "span 3" }}>
+                  <label className="form-label">Versions Applicable <span style={{ color: "#ef4444" }}>*</span></label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
+                    {(form as any).versionNumbers.length === 0 && (
+                      <span style={{ fontSize: 12, color: "var(--text-disabled)", fontStyle: "italic" }}>No versions selected...</span>
+                    )}
+                    {(form as any).versionNumbers.map((v: string) => (
+                      <span key={v} className="badge badge-violet" style={{ padding: "4px 12px", display: "flex", alignItems: "center", gap: 8, fontWeight: 700 }}>
+                        {v}
+                        <button onClick={() => setForm(f => ({ ...f, versionNumbers: (f as any).versionNumbers.filter((vn: string) => vn !== v) }))}>
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <select 
+                    value="" 
+                    onChange={e => {
+                      const v = e.target.value;
+                      if (!v) return;
+                      if (!(form as any).versionNumbers.includes(v)) {
+                         setForm(f => ({ ...f, versionNumbers: [...(f as any).versionNumbers, v] }));
+                      }
+                    }} 
+                    style={selectStyle}>
+                    <option value="">— Add Version —</option>
+                    {(selectedProject?.versions || []).map((v: string) => <option key={v} value={v}>{v}</option>)}
+                  </select>
+                </div>
                 <div>
-                  <label className="form-label">Module</label>
+                  <label className="form-label">Module <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.module}
                     onChange={e => setForm(f => ({ ...f, module: e.target.value, subModule: "", entity: "" }))}
                     style={selectStyle}>
@@ -179,7 +270,7 @@ export default function NewTestCasePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Sub-Module</label>
+                  <label className="form-label">Sub-Module <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.subModule}
                     onChange={e => setForm(f => ({ ...f, subModule: e.target.value, entity: "" }))}
                     style={selectStyle}>
@@ -195,33 +286,33 @@ export default function NewTestCasePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Priority</label>
+                  <label className="form-label">Priority <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value }))} style={selectStyle}>
                     {["Highest", "High", "Medium", "Low"].map(p => <option key={p}>{p}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Status</label>
+                  <label className="form-label">Status <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))} style={selectStyle}>
                     {["Draft", "Active", "Review", "Deprecated"].map(s => <option key={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Test Category</label>
+                  <label className="form-label">Test Category <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.testCategory} onChange={e => setForm(f => ({ ...f, testCategory: e.target.value }))} style={selectStyle}>
                     <option value="">— Select —</option>
                     {configs.testCategories.filter((c:any)=>c.enabled!==false).map((c: any) => <option key={c.id||c.name} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Testing Type</label>
+                  <label className="form-label">Testing Type <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.testingType} onChange={e => setForm(f => ({ ...f, testingType: e.target.value }))} style={selectStyle}>
                     <option value="">— Select —</option>
                     {configs.testingTypes.filter((t:any)=>t.enabled!==false).map((t: any) => <option key={t.id||t.name} value={t.name}>{t.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="form-label">Test Intent</label>
+                  <label className="form-label">Test Intent <span style={{ color: "#ef4444" }}>*</span></label>
                   <select value={form.testIntent} onChange={e => setForm(f => ({ ...f, testIntent: e.target.value }))} style={selectStyle}>
                     <option value="">— Select —</option>
                     {configs.testIntents.filter((i:any)=>i.enabled!==false).map((i: any) => <option key={i.id||i.name} value={i.name}>{i.name}</option>)}
@@ -238,6 +329,91 @@ export default function NewTestCasePage() {
                   <input type="number" value={form.estimatedTime}
                     onChange={e => setForm(f => ({ ...f, estimatedTime: e.target.value }))}
                     style={inputStyle} placeholder="e.g. 15" />
+                </div>
+              </div>
+            </div>
+
+            {/* RTM Requirements Mapping */}
+            <div className="section-card">
+              <div className="section-header">
+                <Link2 size={15} style={{ marginRight: 8 }} />
+                <span>Requirements Traceability Mapping (RTM)</span>
+              </div>
+              <div style={{ padding: "20px 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                <div>
+                  <label className="form-label" style={{ display: "block", marginBottom: 8 }}>Linked Epic <span style={{ color: "#ef4444" }}>*</span></label>
+                  <select
+                    value={form.epic?.id || ""}
+                    onChange={e => {
+                      const selectedEpicId = e.target.value;
+                      if (!selectedEpicId) {
+                        setForm(f => ({ ...f, epic: null, userStories: [] }));
+                      } else {
+                        const epicObj = epics.find(ep => ep.id === selectedEpicId);
+                        setForm(f => ({ ...f, epic: epicObj ? { id: epicObj.id, title: epicObj.key } : null, userStories: [] }));
+                      }
+                    }}
+                    style={selectStyle}
+                  >
+                    <option value="">— Unlinked / None —</option>
+                    {epics.filter(ep => ep.projectId?.toUpperCase() === activeProject?.toUpperCase()).map(ep => (
+                      <option key={ep.id} value={ep.id}>
+                        {ep.key}
+                      </option>
+                    ))}
+                  </select>
+                  <p style={{ fontSize: 11, color: "var(--text-disabled)", marginTop: 8, fontStyle: "italic" }}>
+                    Select an Epic from the master catalog to map this test case.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="form-label" style={{ display: "block", marginBottom: 8 }}>Linked User Stories <span style={{ color: "#ef4444" }}>*</span></label>
+                  {!form.epic ? (
+                    <div style={{ fontSize: 13, color: "var(--text-disabled)", fontStyle: "italic", padding: "8px 0" }}>
+                      Select an Epic first to view and link User Stories...
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 180, overflowY: "auto", border: "1px solid var(--border-strong)", borderRadius: 10, padding: 12, background: "var(--bg-input)" }}>
+                      {stories.filter(s => s.epicId === form.epic?.id && s.projectId?.toUpperCase() === activeProject?.toUpperCase()).length === 0 ? (
+                        <div style={{ fontSize: 12, color: "var(--text-muted)", fontStyle: "italic" }}>
+                          No user stories found for this epic.
+                        </div>
+                      ) : (
+                        stories.filter(s => s.epicId === form.epic?.id && s.projectId?.toUpperCase() === activeProject?.toUpperCase()).map(st => {
+                          const isChecked = (form.userStories || []).some(us => us.id === st.id);
+                          return (
+                            <label key={st.id} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: 13, color: "var(--text-primary)" }}>
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={e => {
+                                  if (e.target.checked) {
+                                    setForm(f => ({
+                                      ...f,
+                                      userStories: [...(f.userStories || []), { id: st.id, title: st.key }]
+                                    }));
+                                  } else {
+                                    setForm(f => ({
+                                      ...f,
+                                      userStories: (f.userStories || []).filter(us => us.id !== st.id)
+                                    }));
+                                  }
+                                }}
+                                style={{ width: 15, height: 15, accentColor: "var(--accent-primary)" }}
+                              />
+                              <span><strong>{st.key}</strong></span>
+                            </label>
+                          );
+                        })
+                      )}
+                    </div>
+                  )}
+                  {form.epic && (
+                    <p style={{ fontSize: 11, color: "var(--text-disabled)", marginTop: 8, fontStyle: "italic" }}>
+                      Check one or more specific User Stories to complete traceability.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

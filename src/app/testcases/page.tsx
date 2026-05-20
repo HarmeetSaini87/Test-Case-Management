@@ -381,6 +381,8 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     if (!suiteForm.sprintStart) return alert("Sprint Start Date is required.");
     if (!suiteForm.sprintEnd) return alert("Sprint End Date is required.");
 
+    const targetProject = suiteForm.project || projectFilter;
+
     // Auto-create sprint if it's a new name not in existing sprints
     const existingSprint = sprints.find((s: any) => s.name.toLowerCase() === suiteForm.sprint.toLowerCase());
     if (!existingSprint) {
@@ -393,7 +395,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
           endDate: suiteForm.sprintEnd,
           description: suiteForm.sprintDesc,
           status: "Planned",
-          project: suiteForm.project
+          project: targetProject
         })
       });
     }
@@ -401,7 +403,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     const res = await fetch("/api/suites", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: suiteForm.name, description: suiteForm.suiteDesc, sprint: suiteForm.sprint, project: suiteForm.project, testCaseIds: selectedTCs, createdBy: currentUser })
+      body: JSON.stringify({ name: suiteForm.name, description: suiteForm.suiteDesc, sprint: suiteForm.sprint, project: targetProject, testCaseIds: selectedTCs, createdBy: currentUser })
     });
     if ((await res.json()).success) {
       setSelectedTCs([]);
@@ -557,7 +559,10 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
                 className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 glass-panel border border-[var(--border-strong)] rounded-full px-6 py-3 flex items-center gap-4 shadow-2xl bg-[var(--bg-overlay)] backdrop-blur-md">
                 <span className="text-[var(--text-primary)] font-bold text-sm bg-[var(--accent-cyan)]/20 px-3 py-1 rounded-full">{selectedTCs.length} Selected</span>
                 <div className="h-6 w-px bg-[var(--border-base)]" />
-                <button onClick={() => setShowSuiteModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--accent-cyan)] text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 hover:bg-[var(--accent-cyan)]/20 transition">
+                <button onClick={() => {
+                  setSuiteForm(prev => ({ ...prev, project: projectFilter }));
+                  setShowSuiteModal(true);
+                }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--accent-cyan)] text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 hover:bg-[var(--accent-cyan)]/20 transition">
                   <Layers size={14}/> Add to Suite
                 </button>
                 <button onClick={() => setShowAssignModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[var(--bg-surface)] border border-[var(--border-base)] hover:bg-[var(--bg-elevated)] transition">
@@ -571,7 +576,15 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
             )}
           </AnimatePresence>
 
-          {filtered.length === 0 ? (
+          {!projectFilter ? (
+            <div className="text-center mt-20 p-12 glass-panel border border-[var(--border-base)] rounded-3xl max-w-lg mx-auto">
+              <FolderOpen className="mx-auto text-[var(--accent-cyan)] mb-4 animate-pulse" size={48} />
+              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">No Project Selected</h3>
+              <p className="text-[var(--text-muted)] text-sm">
+                Please select a project from the top menu to view and manage your Test Repository.
+              </p>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="text-center mt-20">
               <FileText className="mx-auto text-[var(--text-muted)] mb-3" size={40} />
               <p className="text-[var(--text-muted)] text-sm">No test cases match filters.</p>

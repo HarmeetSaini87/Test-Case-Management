@@ -1,0 +1,102 @@
+{
+  "testCaseId": "BSSFMS-TC-048",
+  "title": "Verify Pagination functionality on Control point.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Record View",
+  "subModule": "Contro Point",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Record View -> Control Point",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Now change the record per page count",
+      "testData": "",
+      "expectedResult": "Based on the pagination grid should be updated"
+    },
+    {
+      "action": "Click on the next button",
+      "testData": "",
+      "expectedResult": "User should be redirect to the next page"
+    },
+    {
+      "action": "Click on the previous button",
+      "testData": "",
+      "expectedResult": "User should be redirect to the previous page."
+    }
+  ],
+  "createdDate": "2026-05-14T07:21:09.930Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T11:52:13.326Z",
+  "updatedBy": "Jayraj",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify Pagination functionality on Control point.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Record View -> Control Point",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Now change the record per page count",
+            "testData": "",
+            "expectedResult": "Based on the pagination grid should be updated"
+          },
+          {
+            "action": "Click on the next button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the next page"
+          },
+          {
+            "action": "Click on the previous button",
+            "testData": "",
+            "expectedResult": "User should be redirect to the previous page."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779085296119",
+      "title": "BFR-464"
+    }
+  ]
+}

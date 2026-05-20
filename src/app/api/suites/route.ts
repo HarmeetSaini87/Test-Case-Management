@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+export const dynamic = "force-dynamic";
 
 const suitesPath = path.join(process.cwd(), 'dataHub', 'suites.json');
 
@@ -13,8 +14,13 @@ function readSuites() {
   return JSON.parse(fs.readFileSync(suitesPath, 'utf8'));
 }
 
-export async function GET() {
-  return NextResponse.json({ success: true, ...readSuites() });
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const project = searchParams.get("project");
+  const data = readSuites();
+  
+  const suites = data.suites.filter((s: any) => !project || s.project === project);
+  return NextResponse.json({ success: true, suites });
 }
 
 export async function POST(req: Request) {

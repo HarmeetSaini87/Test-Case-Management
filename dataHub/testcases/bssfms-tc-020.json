@@ -1,0 +1,165 @@
+{
+  "testCaseId": "BSSFMS-TC-020",
+  "title": "Master Page - Verify that Column Name field validations.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the + button",
+      "testData": "",
+      "expectedResult": "User should redirect to the master page"
+    },
+    {
+      "action": "Enter the column name",
+      "testData": "Column Name :- !@#$$% , ABC@!#@ , 123!@# , asd def , 123  asd",
+      "expectedResult": "Column name should be added"
+    },
+    {
+      "action": "Select the column data type from the drop down",
+      "testData": "",
+      "expectedResult": "Column data type should be selected"
+    },
+    {
+      "action": "Click on the save button",
+      "testData": "",
+      "expectedResult": "Error message should be display for the invalid name."
+    }
+  ],
+  "createdDate": "2026-05-08T07:29:44.432Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:54:58.747Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Master Page - Verify that Column Name field validations.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "User should redirect to the master page"
+          },
+          {
+            "action": "Enter the column name",
+            "testData": "Column Name :- !@#$$% , ABC@!#@ , 123!@# , asd def , 123  asd",
+            "expectedResult": "Column name should be added"
+          },
+          {
+            "action": "Select the column data type from the drop down",
+            "testData": "",
+            "expectedResult": "Column data type should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Error message should be display for the invalid name."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-19T09:53:20.456Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Master Page - Verify that Column Name field validations.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the + button",
+            "testData": "",
+            "expectedResult": "User should redirect to the master page"
+          },
+          {
+            "action": "Enter the column name",
+            "testData": "Column Name :- !@#$$% , ABC@!#@ , 123!@# , asd def , 123  asd",
+            "expectedResult": "Column name should be added"
+          },
+          {
+            "action": "Select the column data type from the drop down",
+            "testData": "",
+            "expectedResult": "Column data type should be selected"
+          },
+          {
+            "action": "Click on the save button",
+            "testData": "",
+            "expectedResult": "Error message should be display for the invalid name."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": {
+          "id": "rtm-epic-1779084324066",
+          "title": "BFR-439"
+        },
+        "userStories": [
+          {
+            "id": "rtm-us-1779084521257",
+            "title": "BFR-441"
+          }
+        ]
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084521257",
+      "title": "BFR-441"
+    }
+  ]
+}

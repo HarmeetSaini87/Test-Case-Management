@@ -1,0 +1,92 @@
+{
+  "testCaseId": "BSSFMS-TC-017",
+  "title": "Master Page - that The user cannot edit the Data Type of any column once it has been saved.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the column name",
+      "testData": "",
+      "expectedResult": "User should redirect to the master page"
+    },
+    {
+      "action": "Now try to edit the data type of any column",
+      "testData": "",
+      "expectedResult": "User is not allowed to edit the data type of the column"
+    }
+  ],
+  "createdDate": "2026-05-08T06:28:04.035Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:51:34.330Z",
+  "updatedBy": "Jayraj",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Master Page - that The user cannot edit the Data Type of any column once it has been saved.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the column name",
+            "testData": "",
+            "expectedResult": "User should redirect to the master page"
+          },
+          {
+            "action": "Now try to edit the data type of any column",
+            "testData": "",
+            "expectedResult": "User is not allowed to edit the data type of the column"
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084521257",
+      "title": "BFR-441"
+    }
+  ]
+}

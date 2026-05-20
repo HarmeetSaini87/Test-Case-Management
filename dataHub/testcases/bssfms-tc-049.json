@@ -1,0 +1,82 @@
+{
+  "testCaseId": "BSSFMS-TC-049",
+  "title": "Verify Sorting functionality on Control point.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Record View",
+  "subModule": "Contro Point",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Record View -> Control Point",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Sort the column in ascending and descending order.",
+      "testData": "",
+      "expectedResult": "Column should be sort based on the change."
+    }
+  ],
+  "createdDate": "2026-05-14T07:24:33.781Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T11:52:41.257Z",
+  "updatedBy": "Jayraj",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify Sorting functionality on Control point.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Record View -> Control Point",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Sort the column in ascending and descending order.",
+            "testData": "",
+            "expectedResult": "Column should be sort based on the change."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084389111",
+    "title": "BFR-449"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779085296119",
+      "title": "BFR-464"
+    }
+  ]
+}

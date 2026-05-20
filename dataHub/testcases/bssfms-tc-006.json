@@ -1,0 +1,191 @@
+{
+  "testCaseId": "BSSFMS-TC-006",
+  "title": "List Page - Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Review",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the check box for the column name for tow columns (Onne column is used further and another one is not) and click on the delete button",
+      "testData": "",
+      "expectedResult": "Confirmation pop up window should be open"
+    },
+    {
+      "action": "Click on the Yes button",
+      "testData": "",
+      "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+    }
+  ],
+  "createdDate": "2026-05-07T07:20:03.874Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:22:56.375Z",
+  "updatedBy": "Jayraj",
+  "version": 5,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-07T07:20:03.874Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name (Subscription Column) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-07T08:54:28.898Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name for tow columns (Onne column is used further and another one is not) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 3,
+      "savedAt": "2026-05-07T09:06:16.003Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name for tow columns (Onne column is used further and another one is not) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 4,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "List Page - Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.Verify that if user select two columns (Out of that one is use furthet and another is not use further) and try to delete both columns user should not allowed.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name for tow columns (Onne column is used further and another one is not) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084494027",
+      "title": "BFR-440"
+    }
+  ]
+}

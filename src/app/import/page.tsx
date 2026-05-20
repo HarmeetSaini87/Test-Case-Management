@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, CheckCircle, AlertCircle, FileSpreadsheet, X, ChevronDown, Plus } from "lucide-react";
+import { Upload, CheckCircle, AlertCircle, FileSpreadsheet, X, ChevronDown, Plus, Download, Layers } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "../components/Sidebar";
+import * as XLSX from "xlsx";
 
 export default function ImportPage() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -53,10 +54,24 @@ export default function ImportPage() {
   };
 
   const FORMATS = [
+    { tag: "Panamax", name: "Native Platform Export", cols: "ID, Title, Module, Sub-Module, Priority, Status, Test Step, Expected Result...", isNative: true },
     { tag: "RA", name: "TestCases-RA Format", cols: "Entity Key, Test Case Summary, Priority, Folder Path, Preconditions, Steps..." },
     { tag: "Regression", name: "Regression List Format", cols: "Test Id, Component, Test Case Name, Precondition, Test Steps, Expected Results, Priority..." },
     { tag: "Sprint", name: "Sprint Format", cols: "Test Id, Component, Test Objective, Preconditions, Test Steps, Expected Results, Automation Type, Test Intent..." },
   ];
+
+  const downloadBankaiSample = () => {
+    const headers = ["ID", "Title", "Project", "Module", "Sub-Module", "Entity", "Priority", "Status", "Test Category", "Testing Type", "Test Intent", "Automation Type", "Labels", "Objective", "Description", "Preconditions", "Postconditions", "Test Step", "Expected Result", "Step Test Data", "Estimated Time", "Version", "Created By", "Created On", "Updated By", "Updated On"];
+    const sampleData = [
+      ["", "Sample Login Test", "PROJ", "Auth", "Login", "User", "High", "Draft", "Functional", "Regression", "Positive", "Not Automated", "login;security", "Verify user can login", "Ensure system security", "User must exist", "User is on dashboard", "Enter username", "Username field is filled", "admin", "10m", "1", "admin", new Date().toISOString().split('T')[0], "admin", new Date().toISOString().split('T')[0]],
+      ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Enter password", "Password field is masked", "pass123", "", "", "", "", ""],
+      ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Click login", "Dashboard is displayed", "", "", "", "", "", "", ""],
+    ];
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...sampleData]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Test Cases");
+    XLSX.writeFile(wb, "Panamax_Import_Sample.xlsx");
+  };
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "var(--bg-base)", overflow: "hidden" }}>
@@ -95,11 +110,19 @@ export default function ImportPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 flex items-center gap-3 p-4 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-base)]">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <p className="text-[11px] font-medium text-[var(--text-secondary)]">
-                  RA/Regression/Sprint formats are auto-detected. Multi-row steps are preserved automatically per unique Test ID.
-                </p>
+              <div className="mt-6 flex items-center justify-between p-4 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-base)]">
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <p className="text-[11px] font-medium text-[var(--text-secondary)]">
+                    All formats are auto-detected. Multi-row steps are preserved automatically per unique Test ID or Title.
+                  </p>
+                </div>
+                <button 
+                  onClick={downloadBankaiSample}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] rounded-lg text-[10px] font-bold border border-[var(--accent-cyan)]/20 hover:bg-[var(--accent-cyan)]/20 transition-all"
+                >
+                  <Download size={12} /> Download Panamax Sample
+                </button>
               </div>
             </div>
           </section>
@@ -178,7 +201,10 @@ export default function ImportPage() {
                   <span className="text-sm font-bold text-[var(--text-primary)]">Deployment Target</span>
                 </div>
                 <div className="p-6">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-3 block">Primary Project Context *</label>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Layers size={14} className="text-[var(--text-muted)]" />
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Project:</label>
+                  </div>
                   <select value={projectKey} onChange={e => setProjectKey(e.target.value)}
                     className="form-select font-medium text-[var(--text-primary)] mb-4">
                     <option value="" style={{ background: 'var(--bg-overlay)' }}>— Select Destination —</option>

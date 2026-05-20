@@ -1,0 +1,110 @@
+{
+  "testCaseId": "BSSRA-TC-001",
+  "title": "Recon File Generator->Verify Configuration Name Field",
+  "objective": "This test case is used to verify configuration name. Underscore (_) shall be allowed. The value must be unique and editable.",
+  "description": "",
+  "project": "BSSRA",
+  "module": "System Configuration",
+  "subModule": "Recon File Generator",
+  "entity": "",
+  "priority": "High",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "",
+  "labels": [],
+  "preconditions": "",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to System configuration-> Recon file generator\n",
+      "testData": "",
+      "expectedResult": "Recon file generator list page should appear"
+    },
+    {
+      "action": "Click on “+” icon\n",
+      "testData": "",
+      "expectedResult": "Recon file generator Master page should appear"
+    },
+    {
+      "action": "Enter configuration name with underscore .",
+      "testData": "(e.g., Recon_Test_01)",
+      "expectedResult": "System should accept underscore (_)"
+    },
+    {
+      "action": "Enter duplicate configuration name",
+      "testData": "",
+      "expectedResult": "System should show validation error for duplicate value"
+    },
+    {
+      "action": "Edit configuration name",
+      "testData": "",
+      "expectedResult": "Field should be editable"
+    },
+    {
+      "action": "Click on info icon\n",
+      "testData": "",
+      "expectedResult": "Backend filename pattern should be displayed"
+    }
+  ],
+  "createdDate": "2026-05-04T11:50:09.791Z",
+  "createdBy": "Roshan",
+  "updatedDate": "2026-05-04T12:25:37.069Z",
+  "updatedBy": "Roshan",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-04T11:50:09.791Z",
+      "savedBy": "Roshan",
+      "snapshot": {
+        "title": "Recon File Generator->Verify Configuration Name Field",
+        "priority": "High",
+        "status": "Active",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "",
+        "steps": [
+          {
+            "action": "Go to System configuration-> Recon file generator\n",
+            "testData": "",
+            "expectedResult": "Recon file generator list page should appear"
+          },
+          {
+            "action": "Click on “+” icon\n",
+            "testData": "",
+            "expectedResult": "Recon file generator Master page should appear"
+          },
+          {
+            "action": "Enter configuration name with underscore .",
+            "testData": "(e.g., Recon_Test_01)",
+            "expectedResult": "System should accept underscore (_)"
+          },
+          {
+            "action": "Enter duplicate configuration name",
+            "testData": "",
+            "expectedResult": "System should show validation error for duplicate value"
+          },
+          {
+            "action": "Edit configuration name",
+            "testData": "",
+            "expectedResult": "Field should be editable"
+          },
+          {
+            "action": "Click on info icon\n",
+            "testData": "",
+            "expectedResult": "Backend filename pattern should be displayed"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ]
+}

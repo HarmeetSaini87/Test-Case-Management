@@ -1,0 +1,53 @@
+{
+  "testCaseId": "BSSRA-TC-012",
+  "title": "Verify that each time the reconciliation runs successfully, a new file is generated at the configured destination path.",
+  "objective": "",
+  "description": "",
+  "project": "BSSRA",
+  "module": "System Configuration",
+  "subModule": "Recon File Generator",
+  "entity": "",
+  "priority": "High",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "",
+  "labels": [],
+  "preconditions": "1)User must login with valid credentials.\n2)Application connectivity must be there with connection type(SCP, FTP & File system).\n3)Recon should run successfully.\n4)Recon file generator configuration must be done.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "After recon run successfully go to configured the destination path",
+      "testData": "",
+      "expectedResult": "user should on destination path."
+    },
+    {
+      "action": "verify file generate or not.",
+      "testData": "",
+      "expectedResult": "file should generate."
+    },
+    {
+      "action": "Open & verify file  having correct data .",
+      "testData": "",
+      "expectedResult": "data should be correct."
+    },
+    {
+      "action": "Again recon run successfully go to configured the destination path",
+      "testData": "",
+      "expectedResult": "user should on destination path."
+    },
+    {
+      "action": "verify Another file generate or not.",
+      "testData": "",
+      "expectedResult": "New file should generate."
+    }
+  ],
+  "createdDate": "2026-05-07T09:58:26.264Z",
+  "createdBy": "Roshan",
+  "updatedDate": "2026-05-07T09:58:26.264Z",
+  "updatedBy": "Roshan",
+  "version": 1,
+  "history": []
+}

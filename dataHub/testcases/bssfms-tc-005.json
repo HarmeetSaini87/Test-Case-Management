@@ -1,0 +1,201 @@
+{
+  "testCaseId": "BSSFMS-TC-005",
+  "title": "List Page - Verify that user should not be able to delete Subscription Data Source column.",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Review",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Negative",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the check box for the column name (Subscription Column) and click on the delete button",
+      "testData": "",
+      "expectedResult": "Confirmation pop up window should be open"
+    },
+    {
+      "action": "Click on the Yes button",
+      "testData": "",
+      "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+    }
+  ],
+  "createdDate": "2026-05-07T07:14:13.356Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:21:09.638Z",
+  "updatedBy": "Jayraj",
+  "version": 5,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-07T07:14:13.356Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that user should not be able to delete Subscription Data Source column.",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name (Subscription Column) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-07T09:06:06.734Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify that user should not be able to delete Subscription Data Source column.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name (Subscription Column) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 3,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "List Page - Verify that user should not be able to delete Subscription Data Source column.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name (Subscription Column) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    },
+    {
+      "version": 4,
+      "savedAt": "2026-05-19T09:18:34.487Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "List Page - Verify that user should not be able to delete Subscription Data Source column.",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Negative",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the check box for the column name (Subscription Column) and click on the delete button",
+            "testData": "",
+            "expectedResult": "Confirmation pop up window should be open"
+          },
+          {
+            "action": "Click on the Yes button",
+            "testData": "",
+            "expectedResult": "Record should not be deleted and validation message should be populate for the same."
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": {
+          "id": "rtm-epic-1779084324066",
+          "title": "BFR-439"
+        },
+        "userStories": [
+          {
+            "id": "rtm-us-1779084494027",
+            "title": "BFR-440"
+          }
+        ]
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084494027",
+      "title": "BFR-440"
+    }
+  ]
+}

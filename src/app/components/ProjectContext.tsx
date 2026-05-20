@@ -56,6 +56,11 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
   }, [pathname]);
 
   const handleSetProject = (k: string) => {
+    const currentStored = typeof window !== "undefined" ? localStorage.getItem("panamax-project") : null;
+    if (currentStored === k) {
+      setActiveProject(k);
+      return;
+    }
     setActiveProject(k);
     if (k) {
       localStorage.setItem("panamax-project", k);

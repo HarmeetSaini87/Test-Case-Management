@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, Edit2, X, Layers, FolderOpen } from "lucide-react";
+import { Plus, Trash2, Edit2, X, Layers, FolderOpen, Tag } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "../components/Sidebar";
 
-const emptyProject = { name: "", key: "", description: "", modules: [] as any[] };
+const emptyProject = { name: "", key: "", description: "", modules: [] as any[], versions: [] as string[] };
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -46,7 +46,7 @@ export default function ProjectsPage() {
 
   const openEdit = (p: any) => {
     setEditProject(p);
-    setForm({ name: p.name, key: p.key, description: p.description, modules: p.modules || [] });
+    setForm({ name: p.name, key: p.key, description: p.description, modules: p.modules || [], versions: p.versions || [] });
     setShowForm(true);
   };
 
@@ -229,6 +229,50 @@ export default function ProjectsPage() {
                       onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                       rows={2} className="form-textarea"
                     />
+                  </div>
+
+                  {/* Versions Section */}
+                  <div>
+                    <h3 style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
+                      <Tag size={14} color="var(--accent-violet)" /> Version Management
+                    </h3>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                      <input
+                        id="new-version-input"
+                        className="form-input" placeholder="Add Version (e.g. 1.0, 2.1)"
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            const val = (e.currentTarget as HTMLInputElement).value.trim();
+                            if (val) {
+                              setForm(f => ({ ...f, versions: [...(f as any).versions || [], val] }));
+                              e.currentTarget.value = "";
+                            }
+                          }
+                        }}
+                      />
+                      <button className="btn-ghost" onClick={() => {
+                        const input = document.getElementById('new-version-input') as HTMLInputElement;
+                        const val = input.value.trim();
+                        if (val) {
+                          setForm(f => ({ ...f, versions: [...(f as any).versions || [], val] }));
+                          input.value = "";
+                        }
+                      }}>
+                        <Plus size={15} />
+                      </button>
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                      {((form as any).versions || []).map((v: string, vIdx: number) => (
+                        <div key={vIdx} className="badge badge-violet flex items-center gap-2 pr-1">
+                          {v}
+                          <button onClick={() => setForm(f => ({ ...f, versions: ((f as any).versions || []).filter((_: any, i: number) => i !== vIdx) }))}
+                            className="hover:text-white transition-colors"
+                          >
+                            <X size={10} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Module Builder */}

@@ -1,0 +1,70 @@
+{
+  "testCaseId": "BSSRA-TC-009",
+  "title": "Verify that when reconciliation runs successfully and a File Generator configuration exists for that reconciliation, the file is generated at the configured destination path for the FTP connection type.",
+  "objective": "",
+  "description": "",
+  "project": "BSSRA",
+  "module": "System Configuration",
+  "subModule": "Recon File Generator",
+  "entity": "",
+  "priority": "High",
+  "status": "Draft",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "",
+  "labels": [],
+  "preconditions": "1)User must login with valid credentials.\n2)Application connectivity must be there with connection type(SCP, FTP & File system).\n3)Recon should run successfully.\n4)Recon file generator configuration must be done.",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "After recon run successfully go to configured the destination path",
+      "testData": "",
+      "expectedResult": "user should on destination path."
+    },
+    {
+      "action": "verify file generate or not.",
+      "testData": "",
+      "expectedResult": "file should generate."
+    },
+    {
+      "action": "Open & verify file  having correct data .",
+      "testData": "",
+      "expectedResult": "data should be correct."
+    }
+  ],
+  "createdDate": "2026-05-07T07:21:31.439Z",
+  "createdBy": "Roshan",
+  "updatedDate": "2026-05-07T09:52:12.551Z",
+  "updatedBy": "Roshan",
+  "version": 2,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-07T07:21:31.439Z",
+      "savedBy": "Roshan",
+      "snapshot": {
+        "title": "testfr",
+        "priority": "Medium",
+        "status": "Draft",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "",
+        "steps": [
+          {
+            "action": "test",
+            "testData": "",
+            "expectedResult": "test"
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ]
+}

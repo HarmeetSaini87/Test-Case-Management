@@ -1,0 +1,110 @@
+{
+  "testCaseId": "BSSFMS-TC-010",
+  "title": "Lis Page - Verify export functionality on Column Configuration",
+  "objective": "",
+  "description": "",
+  "project": "BSSFMS",
+  "module": "Extraction & Load Layer",
+  "subModule": "Column Configuration",
+  "entity": "",
+  "priority": "Medium",
+  "status": "Review",
+  "testCategory": "Functional",
+  "testingType": "Manual",
+  "testIntent": "Positive",
+  "automationType": "Not Automated",
+  "assignedTester": "Jayraj",
+  "labels": [],
+  "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+  "estimatedTime": "",
+  "steps": [
+    {
+      "action": "Go to Extraction & Load Layer -> Column Configuration",
+      "testData": "",
+      "expectedResult": "User should redirect to the list page"
+    },
+    {
+      "action": "Click on the export button from the list page",
+      "testData": "",
+      "expectedResult": "Export all active column configuration in CSV format and the file naming convention should be \"FMS_ColumnConfiguration_<yyyyMMdd>_<HHmmss>.csv\""
+    }
+  ],
+  "createdDate": "2026-05-07T09:58:22.667Z",
+  "createdBy": "Jayraj",
+  "updatedDate": "2026-05-19T09:25:09.322Z",
+  "updatedBy": "Jayraj",
+  "version": 3,
+  "history": [
+    {
+      "version": 1,
+      "savedAt": "2026-05-07T09:58:22.667Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Verify export functionality on Column Configuration",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the export button from the list page",
+            "testData": "",
+            "expectedResult": "Export all active column configuration in CSV format and the file naming convention should be \"FMS_ColumnConfiguration_<yyyyMMdd>_<HHmmss>.csv\""
+          }
+        ],
+        "description": "",
+        "assignedTester": ""
+      }
+    },
+    {
+      "version": 2,
+      "savedAt": "2026-05-18T05:27:13.659Z",
+      "savedBy": "Jayraj",
+      "snapshot": {
+        "title": "Lis Page - Verify export functionality on Column Configuration",
+        "priority": "Medium",
+        "status": "Review",
+        "testCategory": "Functional",
+        "testingType": "Manual",
+        "testIntent": "Positive",
+        "preconditions": "1.URL must be working\n2.user should be on FMS home page",
+        "steps": [
+          {
+            "action": "Go to Extraction & Load Layer -> Column Configuration",
+            "testData": "",
+            "expectedResult": "User should redirect to the list page"
+          },
+          {
+            "action": "Click on the export button from the list page",
+            "testData": "",
+            "expectedResult": "Export all active column configuration in CSV format and the file naming convention should be \"FMS_ColumnConfiguration_<yyyyMMdd>_<HHmmss>.csv\""
+          }
+        ],
+        "description": "",
+        "assignedTester": "Jayraj",
+        "epic": null,
+        "userStories": []
+      }
+    }
+  ],
+  "versionNumbers": [
+    "v 3.0.0"
+  ],
+  "epic": {
+    "id": "rtm-epic-1779084324066",
+    "title": "BFR-439"
+  },
+  "userStories": [
+    {
+      "id": "rtm-us-1779084546576",
+      "title": "BFR-442"
+    }
+  ]
+}
