@@ -4,12 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Layers, Plus, Trash2, PlayCircle, X, CheckCircle2, XCircle, Ban,
   MessageSquare, Paperclip, ChevronLeft, Clock, Search, UserCheck,
-  AlertTriangle, FilterX, Eye, FileText, Download
+  AlertTriangle, FilterX, Eye, FileText, Download, Edit2, Database
 } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "../components/Sidebar";
 import TopNav from "../components/TopNav";
 import { useProject } from "../components/ProjectContext";
+import AdvancedFilterBar from "../components/AdvancedFilterBar";
+import JQLQueryBuilder from "../components/JQLQueryBuilder";
+import type { FilterRow } from "@/types/filter";
 
 const STATUS_CFG: any = {
   Pass:    { badge: "badge-green",  icon: <CheckCircle2 size={11} />, btnCls: "badge-green" },
@@ -21,6 +24,32 @@ const PRIORITY_COLOR: any = {
   Highest: "var(--accent-red)", High: "var(--accent-orange)",
   Medium: "var(--accent-cyan)", Low: "var(--text-muted)",
 };
+
+function matchSuiteRow(suite: any, row: FilterRow): boolean {
+  const fieldVal = row.field === 'tcCount' ? (suite.testCaseIds?.length ?? 0) : (suite[row.field] ?? null);
+  const op = row.operator;
+  const val = row.value;
+  const rawStr = fieldVal === null ? '' : String(fieldVal).toLowerCase();
+  const valStr = Array.isArray(val) ? '' : String(val ?? '').toLowerCase();
+  if (op === 'is empty') return !fieldVal;
+  if (op === 'is not empty') return !!fieldVal;
+  if (op === '=' || op === 'is') return rawStr === valStr;
+  if (op === '!=' || op === 'is not') return rawStr !== valStr;
+  if (op === 'contains') return rawStr.includes(valStr);
+  if (op === 'before') return fieldVal ? new Date(String(fieldVal)).getTime() < new Date(valStr).getTime() : false;
+  if (op === 'after')  return fieldVal ? new Date(String(fieldVal)).getTime() > new Date(valStr).getTime() : false;
+  if (op === 'between' && Array.isArray(val) && val.length === 2) {
+    const [f, t] = val as [string, string];
+    const d = fieldVal ? new Date(String(fieldVal)).getTime() : NaN;
+    if (!isNaN(d)) return d >= new Date(f).getTime() && d <= new Date(t).getTime();
+    const n = parseFloat(String(fieldVal));
+    return n >= parseFloat(f) && n <= parseFloat(t);
+  }
+  const n = parseFloat(String(fieldVal)); const vn = parseFloat(valStr);
+  if (op === '>') return n > vn; if (op === '>=') return n >= vn;
+  if (op === '<') return n < vn; if (op === '<=') return n <= vn;
+  return false;
+}
 
 export default function SuitesPage() {
   const { activeProject } = useProject();
@@ -44,6 +73,13 @@ export default function SuitesPage() {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignTester, setAssignTester] = useState("");
   const [showReportMenu, setShowReportMenu] = useState(false);
+
+  const [editSuite, setEditSuite] = useState<any | null>(null);
+  const [editForm, setEditForm] = useState({ name: '', description: '', sprint: '' });
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState('');
+  const [showAddTCsPanel, setShowAddTCsPanel] = useState(false);
+  const [suiteFilterRows, setSuiteFilterRows] = useState<FilterRow[]>([]);
 
   useEffect(() => {
     fetch(`/api/suites${activeProject ? `?project=${activeProject}` : ""}`).then(r => r.json()).then(d => { if (d.success) setSuites(d.suites); });
@@ -79,6 +115,84 @@ export default function SuitesPage() {
   };
 
   const closeRun = () => { setRunSuite(null); setResults({}); setTcAttachments({}); setSelectedRunTCs([]); };
+
+  const openEdit = (suite: any) => {
+    setEditSuite(suite);
+    setEditForm({ name: suite.name || '', description: suite.description || '', sprint: suite.sprint || '' });
+    setEditError('');
+    setShowAddTCsPanel(false);
+  };
+
+  const closeEdit = () => { setEditSuite(null); setShowAddTCsPanel(false); };
+
+  const saveEditMeta = async () => {
+    if (!editForm.name.trim()) { setEditError('Suite name is required'); return; }
+    if (!editForm.sprint.trim()) { setEditError('Sprint is required'); return; }
+    setEditSaving(true); setEditError('');
+    try {
+      const res = await fetch('/api/suites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editSuite.id,
+          name: editForm.name.trim(),
+          description: editForm.description,
+          sprint: editForm.sprint.trim(),
+          project: editSuite.project,
+          testCaseIds: editSuite.testCaseIds,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuites((prev: any[]) => prev.map(s => s.id === editSuite.id ? { ...s, name: editForm.name.trim(), description: editForm.description, sprint: editForm.sprint.trim(), updatedAt: new Date().toISOString() } : s));
+        setEditSuite((s: any) => ({ ...s, name: editForm.name.trim(), description: editForm.description, sprint: editForm.sprint.trim() }));
+      } else {
+        setEditError('Failed to save. Please try again.');
+      }
+    } catch { setEditError('Network error. Please try again.'); }
+    finally { setEditSaving(false); }
+  };
+
+  const removeTCFromEdit = async (tcId: string) => {
+    try {
+      const res = await fetch('/api/suites', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ suiteId: editSuite.id, removeTcId: tcId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const updated = (editSuite.testCaseIds || []).filter((id: string) => id !== tcId);
+        setEditSuite((s: any) => ({ ...s, testCaseIds: updated }));
+        setSuites((prev: any[]) => prev.map(s => s.id === editSuite.id ? { ...s, testCaseIds: updated } : s));
+      }
+    } catch {}
+  };
+
+  const addTCsFromQuery = async (tcIds: string[]) => {
+    if (tcIds.length === 0) return;
+    const merged = [...new Set([...(editSuite.testCaseIds || []), ...tcIds])];
+    try {
+      const res = await fetch('/api/suites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editSuite.id,
+          name: editSuite.name,
+          description: editSuite.description,
+          sprint: editSuite.sprint,
+          project: editSuite.project,
+          testCaseIds: merged,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditSuite((s: any) => ({ ...s, testCaseIds: merged }));
+        setSuites((prev: any[]) => prev.map(s => s.id === editSuite.id ? { ...s, testCaseIds: merged } : s));
+        setShowAddTCsPanel(false);
+      }
+    } catch {}
+  };
 
   const setStatus = (tcId: string, status: string) =>
     setResults(prev => ({ ...prev, [tcId]: { ...prev[tcId], status: prev[tcId]?.status === status ? "Pending" : status } }));
@@ -205,6 +319,18 @@ export default function SuitesPage() {
     return true;
   }), [suiteTCs, results, tcSearch, filterExecStatus, filterAssignee]);
 
+  const filteredSuites = useMemo(() => {
+    if (suiteFilterRows.length === 0) return suites;
+    return suites.filter(suite => {
+      let result = matchSuiteRow(suite, suiteFilterRows[0]);
+      for (let i = 1; i < suiteFilterRows.length; i++) {
+        const curr = matchSuiteRow(suite, suiteFilterRows[i]);
+        result = suiteFilterRows[i - 1].connector === 'OR' ? result || curr : result && curr;
+      }
+      return result;
+    });
+  }, [suites, suiteFilterRows]);
+
   const runStats = runSuite ? {
     total: runSuite.testCaseIds?.length || 0,
     pass:    Object.values(results).filter((r: any) => r.status === "Pass").length,
@@ -307,57 +433,72 @@ export default function SuitesPage() {
                 <Link href="/testcases" className="btn-primary" style={{ marginTop: 8 }}>Go to Repository</Link>
               </div>
             ) : (
-              <div className="section-card">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Suite Name</th>
-                      <th>Sprint</th>
-                      <th style={{ width: 100 }}>Test Cases</th>
-                      <th style={{ width: 140 }}>Created Details</th>
-                      <th style={{ width: 140 }}>Modified Details</th>
-                      <th style={{ width: 110, textAlign: "right" }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {suites.map((s: any, i: number) => (
-                      <motion.tr key={s.id} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                        <td>
-                          <div style={{ fontWeight: 600, fontSize: 13, color: "var(--text-primary)" }}>{s.name}</div>
-                          {s.description && <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>{s.description}</div>}
-                        </td>
-                        <td>
-                          {s.sprint ? <span className="badge badge-cyan">{s.sprint}</span> : <span style={{ color: "var(--text-muted)" }}>—</span>}
-                        </td>
-                        <td>
-                          <span style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)" }}>{s.testCaseIds?.length || 0}</span>
-                          <span style={{ fontSize: 10, color: "var(--text-muted)", marginLeft: 4 }}>TCs</span>
-                        </td>
-                        <td>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)" }}>{s.createdBy || "admin"}</div>
-                          <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 2 }}>{s.createdAt ? new Date(s.createdAt).toLocaleDateString() : "—"}</div>
-                        </td>
-                        <td>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)" }}>{s.updatedBy || s.createdBy || "admin"}</div>
-                          <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 2 }}>{s.updatedAt ? new Date(s.updatedAt).toLocaleDateString() : "—"}</div>
-                        </td>
-                        <td>
-                          <div className="actions-cell" style={{ display: "flex", justifyContent: "flex-end", gap: 4 }}>
-                            <button className="icon-btn run" onClick={() => openRun(s)}>
-                              <PlayCircle size={15} />
-                              <span className="tooltip">Run Suite</span>
-                            </button>
-                            <button className="icon-btn delete" onClick={() => del(s.id)}>
-                              <Trash2 size={14} />
-                              <span className="tooltip">Delete Suite</span>
-                            </button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <>
+                <div style={{ marginBottom: 16 }}>
+                  <AdvancedFilterBar mode="suites" onChange={setSuiteFilterRows} />
+                </div>
+                <div className="section-card">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Suite Name</th>
+                        <th>Sprint</th>
+                        <th style={{ width: 100 }}>Test Cases</th>
+                        <th style={{ width: 140 }}>Created Details</th>
+                        <th style={{ width: 140 }}>Modified Details</th>
+                        <th style={{ width: 130, textAlign: "right" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSuites.map((s: any, i: number) => (
+                        <motion.tr key={s.id} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+                          <td>
+                            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--text-primary)" }}>{s.name}</div>
+                            {s.description && <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>{s.description}</div>}
+                          </td>
+                          <td>
+                            {s.sprint ? <span className="badge badge-cyan">{s.sprint}</span> : <span style={{ color: "var(--text-muted)" }}>—</span>}
+                          </td>
+                          <td>
+                            <span style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)" }}>{s.testCaseIds?.length || 0}</span>
+                            <span style={{ fontSize: 10, color: "var(--text-muted)", marginLeft: 4 }}>TCs</span>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)" }}>{s.createdBy || "admin"}</div>
+                            <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 2 }}>{s.createdAt ? new Date(s.createdAt).toLocaleDateString() : "—"}</div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)" }}>{s.updatedBy || s.createdBy || "admin"}</div>
+                            <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 2 }}>{s.updatedAt ? new Date(s.updatedAt).toLocaleDateString() : "—"}</div>
+                          </td>
+                          <td>
+                            <div className="actions-cell" style={{ display: "flex", justifyContent: "flex-end", gap: 4 }}>
+                              <button
+                                onClick={() => openEdit(s)}
+                                title="Edit Suite"
+                                className="p-2 rounded-lg transition-colors"
+                                style={{ color: 'var(--text-muted)' }}
+                                onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-cyan)')}
+                                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                              >
+                                <Edit2 size={15} />
+                              </button>
+                              <button className="icon-btn run" onClick={() => openRun(s)}>
+                                <PlayCircle size={15} />
+                                <span className="tooltip">Run Suite</span>
+                              </button>
+                              <button className="icon-btn delete" onClick={() => del(s.id)}>
+                                <Trash2 size={14} />
+                                <span className="tooltip">Delete Suite</span>
+                              </button>
+                            </div>
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -730,6 +871,146 @@ export default function SuitesPage() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Edit Suite Panel */}
+      <AnimatePresence>
+        {editSuite && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[90]"
+              style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+              onClick={closeEdit}
+            />
+            <motion.div
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="fixed right-0 top-0 h-full z-[91] flex flex-col shadow-2xl"
+              style={{ width: '100%', maxWidth: 640, background: 'var(--bg-base)', borderLeft: '1px solid var(--border-base)' }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 shrink-0" style={{ borderBottom: '1px solid var(--border-base)', background: 'var(--bg-surface)' }}>
+                <div>
+                  <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+                    <Edit2 size={18} style={{ color: 'var(--accent-cyan)' }} /> Edit Suite
+                  </h2>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{editSuite.testCaseIds?.length || 0} test cases</p>
+                </div>
+                <button onClick={closeEdit} className="p-2 rounded-full transition-colors" style={{ color: 'var(--text-secondary)' }}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+                {/* Section A — Metadata */}
+                <div className="flex flex-col gap-4">
+                  <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--accent-cyan)' }}>Suite Details</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)', fontSize: 10 }}>Suite Name *</label>
+                    <input
+                      value={editForm.name}
+                      onChange={e => { setEditForm(f => ({ ...f, name: e.target.value })); setEditError(''); }}
+                      className="w-full h-10 px-4 rounded-xl outline-none transition-colors"
+                      style={{ border: '1.5px solid var(--border-strong)', background: 'var(--bg-overlay)', color: 'var(--text-primary)', fontSize: 13 }}
+                      placeholder="Suite name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)', fontSize: 10 }}>Description</label>
+                    <textarea
+                      value={editForm.description}
+                      onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                      rows={2}
+                      className="w-full px-4 py-3 rounded-xl outline-none transition-colors resize-none"
+                      style={{ border: '1.5px solid var(--border-strong)', background: 'var(--bg-overlay)', color: 'var(--text-primary)', fontSize: 13 }}
+                      placeholder="Purpose or scope…"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)', fontSize: 10 }}>Sprint *</label>
+                    <input
+                      list="edit-sprints-list"
+                      value={editForm.sprint}
+                      onChange={e => { setEditForm(f => ({ ...f, sprint: e.target.value })); setEditError(''); }}
+                      className="w-full h-10 px-4 rounded-xl outline-none transition-colors"
+                      style={{ border: '1.5px solid var(--border-strong)', background: 'var(--bg-overlay)', color: 'var(--text-primary)', fontSize: 13 }}
+                      placeholder="Sprint name"
+                    />
+                    <datalist id="edit-sprints-list">
+                      {[...new Set(suites.map((s: any) => s.sprint).filter(Boolean))].map((sp: any) => <option key={sp} value={sp} />)}
+                    </datalist>
+                  </div>
+                  {editError && <p className="text-xs" style={{ color: 'var(--accent-red)' }}>{editError}</p>}
+                  <button
+                    onClick={saveEditMeta}
+                    disabled={editSaving}
+                    className="self-end h-9 px-6 rounded-xl text-sm font-semibold transition-opacity disabled:opacity-50"
+                    style={{ background: 'var(--accent-cyan)', color: 'var(--bg-base)' }}
+                  >
+                    {editSaving ? 'Saving…' : 'Save Changes'}
+                  </button>
+                </div>
+
+                <div style={{ borderTop: '1px solid var(--border-base)' }} />
+
+                {/* Section B — Current TCs */}
+                <div className="flex flex-col gap-3">
+                  <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--accent-cyan)' }}>
+                    Test Cases in Suite ({editSuite.testCaseIds?.length || 0})
+                  </p>
+                  {(editSuite.testCaseIds || []).length === 0 ? (
+                    <p className="text-xs text-center py-4" style={{ color: 'var(--text-muted)' }}>No test cases in this suite yet</p>
+                  ) : (
+                    <div className="flex flex-col gap-1 overflow-y-auto pr-1" style={{ maxHeight: 256 }}>
+                      {(editSuite.testCaseIds || []).map((tcId: string) => {
+                        const tc = allTestCases.find((t: any) => t.testCaseId === tcId);
+                        return (
+                          <div key={tcId} className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group" style={{ border: '1px solid var(--border-base)', background: 'var(--bg-surface)' }}>
+                            <span className="text-xs font-mono w-28 shrink-0" style={{ color: 'var(--accent-cyan)' }}>{tcId}</span>
+                            <span className="text-xs flex-1 truncate" style={{ color: 'var(--text-primary)' }}>{tc?.title || '—'}</span>
+                            <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)', fontSize: 10 }}>{tc?.priority}</span>
+                            <button
+                              type="button"
+                              onClick={() => removeTCFromEdit(tcId)}
+                              className="opacity-0 group-hover:opacity-100 p-1 transition-opacity"
+                              style={{ color: 'var(--accent-red)' }}
+                              title="Remove from suite"
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ borderTop: '1px solid var(--border-base)' }} />
+
+                {/* Section C — Add TCs via Query Builder */}
+                <div className="flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddTCsPanel(o => !o)}
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-opacity hover:opacity-80"
+                    style={{ color: 'var(--accent-cyan)' }}
+                  >
+                    <Database size={14} /> {showAddTCsPanel ? '▲' : '▼'} Add Test Cases via Query Builder
+                  </button>
+                  {showAddTCsPanel && (
+                    <JQLQueryBuilder
+                      projectId={editSuite.project}
+                      existingSuiteIds={editSuite.testCaseIds || []}
+                      onAddToSuite={addTCsFromQuery}
+                      onCancel={() => setShowAddTCsPanel(false)}
+                    />
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
       </main>
     </div>
   );
