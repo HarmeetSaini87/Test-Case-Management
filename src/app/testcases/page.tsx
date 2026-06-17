@@ -14,6 +14,7 @@ import { useProject } from "@/app/components/ProjectContext";
 import TopNav from "../components/TopNav";
 import Sidebar from "../components/Sidebar";
 import AdvancedFilterBar from "../components/AdvancedFilterBar";
+import JQLQueryBuilder from "../components/JQLQueryBuilder";
 import type { FilterRow } from "@/types/filter";
 
 function NavItem({ icon, label, active = false, href = "#", onClick }: any) {
@@ -205,7 +206,42 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
   );
 }
 
- function TestCasesInner() {
+function matchClientRow(tc: any, row: FilterRow): boolean {
+  const raw = tc[row.field] ?? null;
+  const op = row.operator;
+  const val = row.value;
+  const rawStr = raw === null ? '' : String(raw).toLowerCase();
+  const valStr = Array.isArray(val) ? '' : String(val ?? '').toLowerCase();
+  const rawArr: string[] = Array.isArray(raw) ? raw.map((v: any) => String(v).toLowerCase()) : [rawStr];
+  const valArr: string[] = Array.isArray(val) && !(op === 'between') ? (val as string[]).map(v => String(v).toLowerCase()) : [];
+
+  if (op === 'is empty') return !raw || (Array.isArray(raw) && raw.length === 0);
+  if (op === 'is not empty') return !!raw && !(Array.isArray(raw) && raw.length === 0);
+  if (op === '=' || op === 'is') return rawArr.some(r => r === valStr);
+  if (op === '!=' || op === 'is not') return rawArr.every(r => r !== valStr);
+  if (op === 'contains') return rawArr.some(r => r.includes(valStr));
+  if (op === 'not contains') return rawArr.every(r => !r.includes(valStr));
+  if (op === 'starts with') return rawArr.some(r => r.startsWith(valStr));
+  if (op === 'in') return valArr.length > 0 && rawArr.some(r => valArr.includes(r));
+  if (op === 'not in') return valArr.length === 0 || rawArr.every(r => !valArr.includes(r));
+  if (op === 'includes any') return valArr.some(v => rawArr.includes(v));
+  if (op === 'includes all') return valArr.every(v => rawArr.includes(v));
+  if (op === 'excludes') return !valArr.some(v => rawArr.includes(v));
+  if (op === 'between' && Array.isArray(val) && val.length === 2) {
+    const [from, to] = val as [string, string];
+    const rawDate = raw ? new Date(String(raw)).getTime() : NaN;
+    if (!isNaN(rawDate) && String(raw).match(/\d{4}-\d{2}-\d{2}/)) return rawDate >= new Date(from).getTime() && rawDate <= new Date(to).getTime();
+    const n = parseFloat(String(raw)); return n >= parseFloat(from) && n <= parseFloat(to);
+  }
+  if (op === 'before') return raw ? new Date(String(raw)).getTime() < new Date(valStr).getTime() : false;
+  if (op === 'after') return raw ? new Date(String(raw)).getTime() > new Date(valStr).getTime() : false;
+  const n = parseFloat(String(raw)); const vn = parseFloat(valStr);
+  if (op === '>') return n > vn; if (op === '>=') return n >= vn;
+  if (op === '<') return n < vn; if (op === '<=') return n <= vn;
+  return false;
+}
+
+function TestCasesInner() {
    const router = useRouter();
    const { activeProject: projectFilter, projects: allProjectsContext, setActiveProject } = useProject();
 
@@ -233,6 +269,8 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
   });
   const [existingSuites, setExistingSuites] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+
+  const [suiteModalTab, setSuiteModalTab] = useState<'manual' | 'query'>('manual');
 
   // Detail-panel tabs
   const [detailTab, setDetailTab] = useState<'edit' | 'history' | 'attachments'>('edit');
@@ -400,6 +438,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     if ((await res.json()).success) {
       setSelectedTCs([]);
       setShowSuiteModal(false);
+      setSuiteModalTab('manual');
       setSuiteForm({ name: "", suiteDesc: "", sprint: "", sprintStart: "", sprintEnd: "", sprintDesc: "", project: "" });
       fetchAll();
       alert(`✅ ${selectedTCs.length} test case(s) added to suite "${suiteForm.name}" under Sprint "${suiteForm.sprint}"`);
@@ -444,41 +483,6 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     await fetch("/api/attachments", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
     setAttachments(prev => prev.filter(a => a.id !== id));
   };
-
-  function matchClientRow(tc: any, row: FilterRow): boolean {
-    const raw = tc[row.field] ?? null;
-    const op = row.operator;
-    const val = row.value;
-    const rawStr = raw === null ? '' : String(raw).toLowerCase();
-    const valStr = Array.isArray(val) ? '' : String(val ?? '').toLowerCase();
-    const rawArr: string[] = Array.isArray(raw) ? raw.map((v: any) => String(v).toLowerCase()) : [rawStr];
-    const valArr: string[] = Array.isArray(val) && !(op === 'between') ? (val as string[]).map(v => String(v).toLowerCase()) : [];
-
-    if (op === 'is empty') return !raw || (Array.isArray(raw) && raw.length === 0);
-    if (op === 'is not empty') return !!raw && !(Array.isArray(raw) && raw.length === 0);
-    if (op === '=' || op === 'is') return rawArr.some(r => r === valStr);
-    if (op === '!=' || op === 'is not') return rawArr.every(r => r !== valStr);
-    if (op === 'contains') return rawArr.some(r => r.includes(valStr));
-    if (op === 'not contains') return rawArr.every(r => !r.includes(valStr));
-    if (op === 'starts with') return rawArr.some(r => r.startsWith(valStr));
-    if (op === 'in') return valArr.length > 0 && rawArr.some(r => valArr.includes(r));
-    if (op === 'not in') return valArr.length === 0 || rawArr.every(r => !valArr.includes(r));
-    if (op === 'includes any') return valArr.some(v => rawArr.includes(v));
-    if (op === 'includes all') return valArr.every(v => rawArr.includes(v));
-    if (op === 'excludes') return !valArr.some(v => rawArr.includes(v));
-    if (op === 'between' && Array.isArray(val) && val.length === 2) {
-      const [from, to] = val as [string, string];
-      const rawDate = raw ? new Date(String(raw)).getTime() : NaN;
-      if (!isNaN(rawDate) && String(raw).match(/\d{4}-\d{2}-\d{2}/)) return rawDate >= new Date(from).getTime() && rawDate <= new Date(to).getTime();
-      const n = parseFloat(String(raw)); return n >= parseFloat(from) && n <= parseFloat(to);
-    }
-    if (op === 'before') return raw ? new Date(String(raw)).getTime() < new Date(valStr).getTime() : false;
-    if (op === 'after') return raw ? new Date(String(raw)).getTime() > new Date(valStr).getTime() : false;
-    const n = parseFloat(String(raw)); const vn = parseFloat(valStr);
-    if (op === '>') return n > vn; if (op === '>=') return n >= vn;
-    if (op === '<') return n < vn; if (op === '<=') return n <= vn;
-    return false;
-  }
 
   const filtered = testCases
     .filter(tc => !searchQuery || tc.title?.toLowerCase().includes(searchQuery.toLowerCase()) || tc.testCaseId?.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -631,7 +635,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} className="bg-[var(--bg-overlay)] border border-[var(--border-base)] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
               <div className="p-6 border-b border-[var(--border-base)] bg-[var(--bg-surface)] flex justify-between items-center shadow-sm">
                 <h2 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2"><Layers size={20} className="text-[var(--accent-cyan)]" /> Add to Test Suite</h2>
-                <button onClick={() => { setShowSuiteModal(false); setSuiteForm({ name: "", suiteDesc: "", sprint: "", sprintStart: "", sprintEnd: "", sprintDesc: "", project: "" }); }} className="p-2 hover:bg-[var(--bg-elevated)] rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"><X size={20} /></button>
+                <button onClick={() => { setShowSuiteModal(false); setSuiteModalTab('manual'); setSuiteForm({ name: "", suiteDesc: "", sprint: "", sprintStart: "", sprintEnd: "", sprintDesc: "", project: "" }); }} className="p-2 hover:bg-[var(--bg-elevated)] rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"><X size={20} /></button>
               </div>
               <div className="p-6 flex flex-col gap-5 max-h-[80vh] overflow-y-auto">
                 <div className="px-4 py-3 bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/15 rounded-xl flex items-center gap-3">
@@ -639,6 +643,28 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
                    <p className="text-sm text-[var(--text-secondary)] font-medium">Adding <strong className="text-[var(--text-primary)]">{selectedTCs.length}</strong> test case(s) to a suite and execution sprint.</p>
                 </div>
 
+                {/* Tab switcher */}
+                <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'var(--bg-elevated)' }}>
+                  <button
+                    type="button"
+                    onClick={() => setSuiteModalTab('manual')}
+                    className={`flex-1 h-8 rounded-lg text-xs font-semibold transition-colors ${suiteModalTab === 'manual' ? 'shadow-sm' : ''}`}
+                    style={suiteModalTab === 'manual' ? { background: 'var(--bg-overlay)', color: 'var(--text-primary)' } : { color: 'var(--text-muted)' }}
+                  >
+                    Manual Selection ({selectedTCs.length} selected)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSuiteModalTab('query')}
+                    className={`flex-1 h-8 rounded-lg text-xs font-semibold transition-colors ${suiteModalTab === 'query' ? 'shadow-sm' : ''}`}
+                    style={suiteModalTab === 'query' ? { background: 'var(--bg-overlay)', color: 'var(--text-primary)' } : { color: 'var(--text-muted)' }}
+                  >
+                    Query Builder
+                  </button>
+                </div>
+
+                {suiteModalTab === 'manual' ? (
+                <>
                 {/* Suite Name + Description */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                   <div>
@@ -752,9 +778,21 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button onClick={() => { setShowSuiteModal(false); setSuiteForm({ name: "", suiteDesc: "", sprint: "", sprintStart: "", sprintEnd: "", sprintDesc: "", project: "" }); }} className="flex-1 py-3 rounded-xl glass-panel border border-[var(--border-base)] text-[var(--text-secondary)] font-semibold hover:bg-[var(--bg-surface)]">Cancel</button>
+                  <button onClick={() => { setShowSuiteModal(false); setSuiteModalTab('manual'); setSuiteForm({ name: "", suiteDesc: "", sprint: "", sprintStart: "", sprintEnd: "", sprintDesc: "", project: "" }); }} className="flex-1 py-3 rounded-xl glass-panel border border-[var(--border-base)] text-[var(--text-secondary)] font-semibold hover:bg-[var(--bg-surface)]">Cancel</button>
                   <button onClick={handleAddToSuite} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold shadow-lg hover:opacity-90 active:scale-95 transition">Confirm & Plan</button>
                 </div>
+                </>
+                ) : (
+                  <JQLQueryBuilder
+                    projectId={projectFilter || ''}
+                    existingSuiteIds={[]}
+                    onAddToSuite={(tcIds) => {
+                      setSelectedTCs((prev: string[]) => [...new Set([...prev, ...tcIds])]);
+                      setSuiteModalTab('manual');
+                    }}
+                    onCancel={() => setSuiteModalTab('manual')}
+                  />
+                )}
               </div>
             </motion.div>
           </motion.div>
