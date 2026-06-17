@@ -13,6 +13,8 @@ import * as XLSX from "xlsx";
 import { useProject } from "@/app/components/ProjectContext";
 import TopNav from "../components/TopNav";
 import Sidebar from "../components/Sidebar";
+import AdvancedFilterBar from "../components/AdvancedFilterBar";
+import type { FilterRow } from "@/types/filter";
 
 function NavItem({ icon, label, active = false, href = "#", onClick }: any) {
   if (onClick) return (
@@ -219,17 +221,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
   const [form, setForm] = useState<any>({ ...EMPTY_TC, project: projectFilter });
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterPriority, setFilterPriority] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterModule, setFilterModule] = useState("");
-  const [filterSubModule, setFilterSubModule] = useState("");
-  const [filterEntity, setFilterEntity] = useState("");
-  const [filterCategory, setFilterCategory] = useState("");
-  const [filterTestingType, setFilterTestingType] = useState("");
-  const [filterCreatedBy, setFilterCreatedBy] = useState("");
-  const [filterModifiedBy, setFilterModifiedBy] = useState("");
-  const [filterCreatedDate, setFilterCreatedDate] = useState("");
-  const [filterModifiedDate, setFilterModifiedDate] = useState("");
+  const [filterRows, setFilterRows] = useState<FilterRow[]>([]);
   const [newLabel, setNewLabel] = useState("");
 
   const [selectedTCs, setSelectedTCs] = useState<string[]>([]);
@@ -381,6 +373,8 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     if (!suiteForm.sprintStart) return alert("Sprint Start Date is required.");
     if (!suiteForm.sprintEnd) return alert("Sprint End Date is required.");
 
+    const targetProject = suiteForm.project || projectFilter;
+
     // Auto-create sprint if it's a new name not in existing sprints
     const existingSprint = sprints.find((s: any) => s.name.toLowerCase() === suiteForm.sprint.toLowerCase());
     if (!existingSprint) {
@@ -393,7 +387,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
           endDate: suiteForm.sprintEnd,
           description: suiteForm.sprintDesc,
           status: "Planned",
-          project: suiteForm.project
+          project: targetProject
         })
       });
     }
@@ -401,7 +395,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     const res = await fetch("/api/suites", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: suiteForm.name, description: suiteForm.suiteDesc, sprint: suiteForm.sprint, project: suiteForm.project, testCaseIds: selectedTCs, createdBy: currentUser })
+      body: JSON.stringify({ name: suiteForm.name, description: suiteForm.suiteDesc, sprint: suiteForm.sprint, project: targetProject, testCaseIds: selectedTCs, createdBy: currentUser })
     });
     if ((await res.json()).success) {
       setSelectedTCs([]);
@@ -451,19 +445,52 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
     setAttachments(prev => prev.filter(a => a.id !== id));
   };
 
+  function matchClientRow(tc: any, row: FilterRow): boolean {
+    const raw = tc[row.field] ?? null;
+    const op = row.operator;
+    const val = row.value;
+    const rawStr = raw === null ? '' : String(raw).toLowerCase();
+    const valStr = Array.isArray(val) ? '' : String(val ?? '').toLowerCase();
+    const rawArr: string[] = Array.isArray(raw) ? raw.map((v: any) => String(v).toLowerCase()) : [rawStr];
+    const valArr: string[] = Array.isArray(val) && !(op === 'between') ? (val as string[]).map(v => String(v).toLowerCase()) : [];
+
+    if (op === 'is empty') return !raw || (Array.isArray(raw) && raw.length === 0);
+    if (op === 'is not empty') return !!raw && !(Array.isArray(raw) && raw.length === 0);
+    if (op === '=' || op === 'is') return rawArr.some(r => r === valStr);
+    if (op === '!=' || op === 'is not') return rawArr.every(r => r !== valStr);
+    if (op === 'contains') return rawArr.some(r => r.includes(valStr));
+    if (op === 'not contains') return rawArr.every(r => !r.includes(valStr));
+    if (op === 'starts with') return rawArr.some(r => r.startsWith(valStr));
+    if (op === 'in') return valArr.length > 0 && rawArr.some(r => valArr.includes(r));
+    if (op === 'not in') return valArr.length === 0 || rawArr.every(r => !valArr.includes(r));
+    if (op === 'includes any') return valArr.some(v => rawArr.includes(v));
+    if (op === 'includes all') return valArr.every(v => rawArr.includes(v));
+    if (op === 'excludes') return !valArr.some(v => rawArr.includes(v));
+    if (op === 'between' && Array.isArray(val) && val.length === 2) {
+      const [from, to] = val as [string, string];
+      const rawDate = raw ? new Date(String(raw)).getTime() : NaN;
+      if (!isNaN(rawDate) && String(raw).match(/\d{4}-\d{2}-\d{2}/)) return rawDate >= new Date(from).getTime() && rawDate <= new Date(to).getTime();
+      const n = parseFloat(String(raw)); return n >= parseFloat(from) && n <= parseFloat(to);
+    }
+    if (op === 'before') return raw ? new Date(String(raw)).getTime() < new Date(valStr).getTime() : false;
+    if (op === 'after') return raw ? new Date(String(raw)).getTime() > new Date(valStr).getTime() : false;
+    const n = parseFloat(String(raw)); const vn = parseFloat(valStr);
+    if (op === '>') return n > vn; if (op === '>=') return n >= vn;
+    if (op === '<') return n < vn; if (op === '<=') return n <= vn;
+    return false;
+  }
+
   const filtered = testCases
     .filter(tc => !searchQuery || tc.title?.toLowerCase().includes(searchQuery.toLowerCase()) || tc.testCaseId?.toLowerCase().includes(searchQuery.toLowerCase()))
-    .filter(tc => !filterPriority || tc.priority === filterPriority)
-    .filter(tc => !filterStatus || tc.status === filterStatus)
-    .filter(tc => !filterModule || tc.module === filterModule)
-    .filter(tc => !filterSubModule || tc.subModule === filterSubModule)
-    .filter(tc => !filterEntity || tc.entity === filterEntity)
-    .filter(tc => !filterCategory || tc.testCategory === filterCategory)
-    .filter(tc => !filterTestingType || tc.testingType === filterTestingType)
-    .filter(tc => !filterCreatedBy || tc.createdBy?.toLowerCase().includes(filterCreatedBy.toLowerCase()))
-    .filter(tc => !filterModifiedBy || tc.updatedBy?.toLowerCase().includes(filterModifiedBy.toLowerCase()))
-    .filter(tc => !filterCreatedDate || (tc.createdDate && tc.createdDate.includes(filterCreatedDate)))
-    .filter(tc => !filterModifiedDate || (tc.updatedDate && tc.updatedDate.includes(filterModifiedDate)));
+    .filter(tc => {
+      if (filterRows.length === 0) return true;
+      let result = matchClientRow(tc, filterRows[0]);
+      for (let i = 1; i < filterRows.length; i++) {
+        const curr = matchClientRow(tc, filterRows[i]);
+        result = filterRows[i - 1].connector === 'OR' ? result || curr : result && curr;
+      }
+      return result;
+    });
 
   const priorityColor: any = { Highest: "text-red-400 bg-red-500/10 border-red-500/20", High: "text-orange-400 bg-orange-500/10 border-orange-500/20", Medium: "text-blue-400 bg-blue-500/10 border-blue-500/20", Low: "text-gray-400 bg-gray-500/10 border-gray-500/20" };
   const statusColor: any = { Draft: "text-yellow-400 bg-yellow-500/10", Active: "text-green-400 bg-green-500/10", Deprecated: "text-red-400 bg-red-500/10", Review: "text-purple-400 bg-purple-500/10" };
@@ -499,52 +526,7 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
             <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg pl-8 pr-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition" placeholder="Search test cases..." />
           </div>
 
-          <select value={filterPriority} onChange={e => setFilterPriority(e.target.value)}
-            className="bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition appearance-none min-w-32">
-            <option value="">All Priorities</option>
-            <option value="Highest">Highest</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option>
-          </select>
-          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-            className="bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition appearance-none min-w-32">
-            <option value="">All Statuses</option>
-            <option value="Draft">Draft</option><option value="Active">Active</option><option value="Review">Review</option><option value="Deprecated">Deprecated</option>
-          </select>
-          <select value={filterModule} onChange={e => { setFilterModule(e.target.value); setFilterSubModule(""); setFilterEntity(""); }}
-            className="bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition appearance-none min-w-32">
-            <option value="">All Modules</option>
-            {[...new Set(testCases.map((t:any)=>t.module).filter(Boolean))].map((m:any) => <option key={m} value={m}>{m}</option>)}
-          </select>
-
-          <div className="flex items-center gap-2 border-[var(--border-base)] pl-3">
-            <Search size={12} className="text-[var(--text-muted)]" />
-            <input value={filterCreatedBy} onChange={e => setFilterCreatedBy(e.target.value)}
-              className="bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-2 py-1.5 text-[11px] text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition w-24" placeholder="Author..." title="Created By" />
-            <div className="flex items-center gap-1.5 bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-2 text-[11px] text-[var(--text-primary)] focus-within:border-blue-500 transition cursor-pointer group"
-              onClick={(e) => { const input = e.currentTarget.querySelector('input'); if(input) { (input as any).showPicker?.() || input.focus(); } }}>
-              <Calendar size={11} className="group-hover:text-blue-400 transition" />
-              <input type="date" value={filterCreatedDate} onChange={e => setFilterCreatedDate(e.target.value)}
-                className="bg-transparent border-none py-1.5 text-[var(--text-primary)] focus:outline-none w-24 cursor-pointer" title="Created On" onClick={e => e.stopPropagation()} />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 border-[var(--border-base)] pl-3">
-            <Clock size={12} className="text-[var(--text-muted)]" />
-            <input value={filterModifiedBy} onChange={e => setFilterModifiedBy(e.target.value)}
-              className="bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-2 py-1.5 text-[11px] text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition w-24" placeholder="Modifier..." title="Modified By" />
-            <div className="flex items-center gap-1.5 bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg px-2 text-[11px] text-[var(--text-primary)] focus-within:border-blue-500 transition cursor-pointer group"
-              onClick={(e) => { const input = e.currentTarget.querySelector('input'); if(input) { (input as any).showPicker?.() || input.focus(); } }}>
-              <Calendar size={11} className="group-hover:text-blue-400 transition" />
-              <input type="date" value={filterModifiedDate} onChange={e => setFilterModifiedDate(e.target.value)}
-                className="bg-transparent border-none py-1.5 text-[var(--text-primary)] focus:outline-none w-24 cursor-pointer" title="Modified On" onClick={e => e.stopPropagation()} />
-            </div>
-          </div>
-
-          {(filterPriority||filterStatus||filterModule||searchQuery||filterCreatedBy||filterModifiedBy||filterCreatedDate||filterModifiedDate) && (
-            <button onClick={() => { setSearchQuery(""); setFilterPriority(""); setFilterStatus(""); setFilterModule(""); setFilterSubModule(""); setFilterEntity(""); setFilterCategory(""); setFilterTestingType(""); }}
-              className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-red-400 transition px-3 py-2 border border-[var(--border-base)] rounded-lg hover:border-red-400/30">
-              <FilterX size={13} /> Clear
-            </button>
-          )}
+          <AdvancedFilterBar mode="testcases" onChange={setFilterRows} />
 
           <span className="text-xs text-[var(--text-muted)] ml-auto">{filtered.length} / {testCases.length} TCs</span>
         </div>
@@ -557,7 +539,10 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
                 className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 glass-panel border border-[var(--border-strong)] rounded-full px-6 py-3 flex items-center gap-4 shadow-2xl bg-[var(--bg-overlay)] backdrop-blur-md">
                 <span className="text-[var(--text-primary)] font-bold text-sm bg-[var(--accent-cyan)]/20 px-3 py-1 rounded-full">{selectedTCs.length} Selected</span>
                 <div className="h-6 w-px bg-[var(--border-base)]" />
-                <button onClick={() => setShowSuiteModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--accent-cyan)] text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 hover:bg-[var(--accent-cyan)]/20 transition">
+                <button onClick={() => {
+                  setSuiteForm(prev => ({ ...prev, project: projectFilter }));
+                  setShowSuiteModal(true);
+                }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--accent-cyan)] text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 hover:bg-[var(--accent-cyan)]/20 transition">
                   <Layers size={14}/> Add to Suite
                 </button>
                 <button onClick={() => setShowAssignModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[var(--bg-surface)] border border-[var(--border-base)] hover:bg-[var(--bg-elevated)] transition">
