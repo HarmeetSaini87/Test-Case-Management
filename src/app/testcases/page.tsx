@@ -784,7 +784,7 @@ function TestCasesInner() {
                 </>
                 ) : (
                   <JQLQueryBuilder
-                    projectId={projectFilter || activeProject || ''}
+                    projectId={projectFilter || ''}
                     existingSuiteIds={[]}
                     onAddToSuite={(tcIds) => {
                       setSelectedTCs((prev: string[]) => [...new Set([...prev, ...tcIds])]);
