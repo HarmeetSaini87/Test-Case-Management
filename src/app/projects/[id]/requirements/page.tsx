@@ -102,6 +102,17 @@ export default function RequirementsCatalog() {
     fetchData();
   };
 
+  const handleArchiveEpic = async (epicId: string) => {
+    if (!confirm("Are you sure you want to delete this Epic?")) return;
+    const res = await fetch(`/api/rtm/epics?epicId=${epicId}`, { method: "DELETE" });
+    const data = await res.json();
+    if (data.success) {
+      fetchData();
+    } else {
+      alert(data.error || "Failed to delete Epic");
+    }
+  };
+
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "var(--bg-input)",
@@ -170,19 +181,24 @@ export default function RequirementsCatalog() {
                   const epicStories = stories.filter(s => s.epicId === epic.id && s.status !== "ARCHIVED");
                   return (
                     <div key={epic.id} className="section-card" style={{ padding: 0, overflow: "hidden" }}>
-                      <div className="section-header" style={{ padding: "16px 20px", display: "flex", alignItems: "center", background: "var(--bg-surface)", borderBottom: "1px solid var(--border-base)" }}>
-                        <span style={{
-                          fontSize: 9,
-                          fontWeight: 800,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.08em",
-                          background: "var(--accent-violet)",
-                          color: "white",
-                          padding: "2px 6px",
-                          borderRadius: 4,
-                          marginRight: 10
-                        }}>Epic</span>
-                        <span style={{ fontWeight: 700, fontSize: 14, color: "var(--text-primary)" }}>{epic.key}: {epic.name}</span>
+                      <div className="section-header" style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "var(--bg-surface)", borderBottom: "1px solid var(--border-base)" }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <span style={{
+                            fontSize: 9,
+                            fontWeight: 800,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.08em",
+                            background: "var(--accent-violet)",
+                            color: "white",
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            marginRight: 10
+                          }}>Epic</span>
+                          <span style={{ fontWeight: 700, fontSize: 14, color: "var(--text-primary)" }}>{epic.key}: {epic.name}</span>
+                        </div>
+                        <button onClick={() => handleArchiveEpic(epic.id)} className="icon-btn delete" style={{ width: 28, height: 28 }} title="Delete Epic">
+                          <Trash2 size={13} />
+                        </button>
                       </div>
                       
                       <div style={{ padding: "20px 24px" }}>

@@ -1,7 +1,7 @@
 // src/app/components/AdvancedFilterBar.tsx
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { Plus, X, ChevronDown, FilterX } from "lucide-react";
+import { Plus, X, ChevronDown, FilterX, Save, FolderOpen, Loader2 } from "lucide-react";
 import { FilterRow, JQL_FIELD_MAP, OPERATORS_BY_TYPE, newFilterRow } from "@/types/filter";
 
 const SUITE_FIELD_MAP: Record<string, { label: string; type: string; options?: string[] }> = {
@@ -16,6 +16,8 @@ export interface AdvancedFilterBarProps {
   mode: 'testcases' | 'suites';
   onChange: (rows: FilterRow[]) => void;
   initialRows?: FilterRow[];
+  projectId?: string;
+  currentUser?: string;
 }
 
 function MultiSelectDropdown({ options, value, onChange }: { options: string[]; value: string[]; onChange: (v: string[]) => void }) {
@@ -77,26 +79,89 @@ function RowValueInput({ row, fieldMap, onUpdate }: { row: FilterRow; fieldMap: 
   return <input type="text" value={String(val || '')} onChange={e => onUpdate({ value: e.target.value })} placeholder="value" className="h-8 px-3 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-overlay)] text-[var(--text-primary)] text-xs w-[160px] placeholder:text-[var(--text-muted)]" />;
 }
 
-export default function AdvancedFilterBar({ mode, onChange, initialRows }: AdvancedFilterBarProps) {
+export default function AdvancedFilterBar({ mode, onChange, initialRows, projectId, currentUser }: AdvancedFilterBarProps) {
   const [rows, setRows] = useState<FilterRow[]>(initialRows || []);
   const fieldMap = mode === 'suites' ? SUITE_FIELD_MAP : JQL_FIELD_MAP;
   const fieldOptions = Object.entries(fieldMap);
 
-  const commit = (newRows: FilterRow[]) => { setRows(newRows); onChange(newRows); };
+  // Save/Load state (testcases mode only)
+  const [savedFilters, setSavedFilters] = useState<any[]>([]);
+  const [loadOpen, setLoadOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveName, setSaveName] = useState('');
+  const [showSaveInput, setShowSaveInput] = useState(false);
+  const loadRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (mode !== 'testcases' || !projectId) return;
+    fetch(`/api/saved-filters?project=${projectId}`)
+      .then(r => r.json()).then(d => { if (d.success) setSavedFilters(d.filters || []); });
+  }, [mode, projectId]);
+
+  useEffect(() => {
+    if (!loadOpen) return;
+    const h = (e: MouseEvent) => { if (loadRef.current && !loadRef.current.contains(e.target as Node)) setLoadOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, [loadOpen]);
+
+  const commit = (newRows: FilterRow[]) => { setRows(newRows); onChange(newRows); };
   const updateRow = (idx: number, patch: Partial<FilterRow>) => {
     commit(rows.map((r, i) => i === idx ? { ...r, ...patch } : r));
   };
-
   const removeRow = (idx: number) => commit(rows.filter((_, i) => i !== idx));
   const addRow = () => commit([...rows, newFilterRow()]);
   const clearAll = () => commit([]);
 
+  const saveFilter = async () => {
+    if (!saveName.trim() || !projectId || rows.length === 0) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/saved-filters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: saveName.trim(), projectId, filters: rows, createdBy: currentUser || 'admin' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSavedFilters(f => [...f, data.filter]);
+        setSaveName('');
+        setShowSaveInput(false);
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const loadFilter = (sf: any) => {
+    commit(sf.filters);
+    setLoadOpen(false);
+  };
+
   if (rows.length === 0) {
     return (
-      <button type="button" onClick={addRow} className="flex items-center gap-1.5 h-8 px-3 rounded-xl border border-dashed border-[var(--border-base)] text-[var(--text-muted)] text-xs hover:text-[var(--accent-cyan)] hover:border-[var(--accent-cyan)] transition-colors">
-        <Plus size={12} /> Add Filter
-      </button>
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={addRow} className="flex items-center gap-1.5 h-8 px-3 rounded-xl border border-dashed border-[var(--border-base)] text-[var(--text-muted)] text-xs hover:text-[var(--accent-cyan)] hover:border-[var(--accent-cyan)] transition-colors">
+          <Plus size={12} /> Add Filter
+        </button>
+        {mode === 'testcases' && projectId && savedFilters.length > 0 && (
+          <div ref={loadRef} className="relative">
+            <button type="button" onClick={() => setLoadOpen(o => !o)} className="flex items-center gap-1.5 h-8 px-3 rounded-xl border border-[var(--border-base)] text-[var(--text-muted)] text-xs hover:text-[var(--accent-cyan)] hover:border-[var(--accent-cyan)] transition-colors">
+              <FolderOpen size={12} /> Load Filter
+            </button>
+            {loadOpen && (
+              <div className="absolute z-50 top-full left-0 mt-1 min-w-[200px] bg-[var(--bg-overlay)] border border-[var(--border-base)] rounded-xl shadow-xl overflow-hidden">
+                {savedFilters.map(sf => (
+                  <button key={sf.id} type="button" onClick={() => loadFilter(sf)} className="w-full flex items-center justify-between px-3 py-2.5 text-xs hover:bg-[var(--bg-elevated)] transition-colors text-left text-[var(--text-primary)]">
+                    <span className="font-medium">{sf.name}</span>
+                    <span className="text-[var(--text-muted)]">{sf.filters.length} rule{sf.filters.length !== 1 ? 's' : ''}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     );
   }
 
@@ -154,13 +219,59 @@ export default function AdvancedFilterBar({ mode, onChange, initialRows }: Advan
         );
       })}
 
-      <div className="flex items-center gap-2 mt-1">
+      <div className="flex items-center gap-2 mt-1 flex-wrap">
         <button type="button" onClick={addRow} className="flex items-center gap-1.5 h-7 px-3 rounded-lg border border-dashed border-[var(--border-base)] text-[var(--text-muted)] text-xs hover:text-[var(--accent-cyan)] hover:border-[var(--accent-cyan)] transition-colors">
           <Plus size={11} /> Add Filter
         </button>
-        <button type="button" onClick={clearAll} className="flex items-center gap-1.5 h-7 px-3 rounded-lg text-[var(--text-muted)] text-xs hover:text-[var(--accent-red)] transition-colors">
+        <button type="button" onClick={clearAll} className="flex items-center gap-1.5 h-7 px-3 rounded-lg text-[var(--text-muted)] text-xs hover:text-red-400 transition-colors">
           <FilterX size={11} /> Clear All
         </button>
+
+        {mode === 'testcases' && projectId && (
+          <>
+            {/* Load saved filter */}
+            {savedFilters.length > 0 && (
+              <div ref={loadRef} className="relative">
+                <button type="button" onClick={() => setLoadOpen(o => !o)} className="flex items-center gap-1.5 h-7 px-3 rounded-lg border border-[var(--border-base)] text-[var(--text-muted)] text-xs hover:text-[var(--accent-cyan)] hover:border-[var(--accent-cyan)] transition-colors">
+                  <FolderOpen size={11} /> Load Filter <ChevronDown size={10} className={loadOpen ? 'rotate-180' : ''} />
+                </button>
+                {loadOpen && (
+                  <div className="absolute z-50 bottom-full left-0 mb-1 min-w-[200px] bg-[var(--bg-overlay)] border border-[var(--border-base)] rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+                    {savedFilters.map(sf => (
+                      <button key={sf.id} type="button" onClick={() => loadFilter(sf)} className="w-full flex items-center justify-between px-3 py-2.5 text-xs hover:bg-[var(--bg-elevated)] transition-colors text-left text-[var(--text-primary)]">
+                        <span className="font-medium">{sf.name}</span>
+                        <span className="text-[var(--text-muted)]">{sf.filters.length} rule{sf.filters.length !== 1 ? 's' : ''}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Save current filter */}
+            {showSaveInput ? (
+              <div className="flex items-center gap-1">
+                <input
+                  autoFocus
+                  type="text"
+                  value={saveName}
+                  onChange={e => setSaveName(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') saveFilter(); if (e.key === 'Escape') setShowSaveInput(false); }}
+                  placeholder="Filter name…"
+                  className="h-7 px-2 rounded-lg border border-[var(--accent-cyan)]/50 bg-[var(--bg-overlay)] text-xs text-[var(--text-primary)] w-32 placeholder:text-[var(--text-muted)]"
+                />
+                <button type="button" onClick={saveFilter} disabled={saving || !saveName.trim()} className="h-7 px-2 rounded-lg bg-[var(--accent-cyan)] text-black text-xs font-bold disabled:opacity-40 transition-colors">
+                  {saving ? <Loader2 size={11} className="animate-spin" /> : 'Save'}
+                </button>
+                <button type="button" onClick={() => { setShowSaveInput(false); setSaveName(''); }} className="h-7 px-2 rounded-lg text-[var(--text-muted)] text-xs hover:text-red-400 transition-colors"><X size={11} /></button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => setShowSaveInput(true)} className="flex items-center gap-1.5 h-7 px-3 rounded-lg border border-[var(--border-base)] text-[var(--text-muted)] text-xs hover:text-[var(--accent-cyan)] hover:border-[var(--accent-cyan)] transition-colors">
+                <Save size={11} /> Save Filter
+              </button>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

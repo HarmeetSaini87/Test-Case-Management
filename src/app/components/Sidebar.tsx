@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, FolderOpen, ShieldCheck, Layers,
-  Calendar, Upload, Settings, LogOut, Zap, ChevronRight, FileText, Network
+  Calendar, Upload, Settings, LogOut, Zap, ChevronRight, FileText, Network, BookOpen
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useProject } from "./ProjectContext";
@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { icon: FolderOpen,      label: "Projects",              href: "/projects" },
   { icon: ShieldCheck,     label: "Test Repository", href: "/testcases" },
   { icon: Layers,          label: "Test Suites",     href: "/suites" },
+  { icon: BookOpen,        label: "Saved Filters",   href: "/saved-filters" },
   { icon: Calendar,        label: "Sprints",         href: "/sprints" },
   { icon: Upload,          label: "Import",          href: "/import" },
 ];

@@ -70,25 +70,29 @@ function matchRow(tc: any, row: FilterRow, epics: Map<string, any>, stories: Map
 
   if (op === 'is empty')     return raw === null || raw === undefined || raw === '' || (Array.isArray(raw) && raw.length === 0);
   if (op === 'is not empty') return !(raw === null || raw === undefined || raw === '' || (Array.isArray(raw) && raw.length === 0));
-  if (op === '=' || op === 'is')        return rawArr.some(r => r === valStr);
-  if (op === '!=' || op === 'is not')   return rawArr.every(r => r !== valStr);
+  // 'is'/'in' and 'is not'/'not in' unified — array val from MultiSelectDropdown uses valArr
+  if (op === 'is' || op === 'in')       return valArr.length > 0 ? rawArr.some(r => valArr.includes(r)) : (valStr !== '' && rawArr.some(r => r === valStr));
+  if (op === 'is not' || op === 'not in') return valArr.length > 0 ? rawArr.every(r => !valArr.includes(r)) : (valStr === '' || rawArr.every(r => r !== valStr));
+  if (op === '=')            return valStr !== '' && rawArr.some(r => r === valStr);
+  if (op === '!=')           return valStr === '' || rawArr.every(r => r !== valStr);
   if (op === 'contains')     return rawArr.some(r => r.includes(valStr));
   if (op === 'not contains') return rawArr.every(r => !r.includes(valStr));
   if (op === 'starts with')  return rawArr.some(r => r.startsWith(valStr));
-  if (op === 'in')           return valArr.length > 0 && rawArr.some(r => valArr.includes(r));
-  if (op === 'not in')       return valArr.length === 0 || rawArr.every(r => !valArr.includes(r));
   if (op === 'includes any') return valArr.some(v => rawArr.includes(v));
   if (op === 'includes all') return valArr.every(v => rawArr.includes(v));
   if (op === 'excludes')     return !valArr.some(v => rawArr.includes(v));
 
   if (op === 'between' && Array.isArray(val) && val.length === 2) {
     const [from, to] = val as [string, string];
+    if (!from && !to) return true;
     const rawDate = raw ? new Date(String(raw)).getTime() : NaN;
     if (!isNaN(rawDate) && raw && String(raw).match(/\d{4}-\d{2}-\d{2}/)) {
-      return rawDate >= new Date(from).getTime() && rawDate <= new Date(to).getTime();
+      const fromTs = from ? new Date(from).getTime() : -Infinity;
+      const toTs = to ? new Date(to + 'T23:59:59.999').getTime() : Infinity;
+      return rawDate >= fromTs && rawDate <= toTs;
     }
     const n = parseFloat(String(raw));
-    return !isNaN(n) && n >= parseFloat(from) && n <= parseFloat(to);
+    return !isNaN(n) && n >= parseFloat(from || '-Infinity') && n <= parseFloat(to || 'Infinity');
   }
   if (op === 'before') { const d = raw ? new Date(String(raw)).getTime() : NaN; return !isNaN(d) && d < new Date(valStr).getTime(); }
   if (op === 'after')  { const d = raw ? new Date(String(raw)).getTime() : NaN; return !isNaN(d) && d > new Date(valStr).getTime(); }

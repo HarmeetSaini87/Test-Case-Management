@@ -14,7 +14,7 @@ import { useProject } from "@/app/components/ProjectContext";
 import TopNav from "../components/TopNav";
 import Sidebar from "../components/Sidebar";
 import AdvancedFilterBar from "../components/AdvancedFilterBar";
-import JQLQueryBuilder from "../components/JQLQueryBuilder";
+import SavedFilterPicker from "../components/SavedFilterPicker";
 import type { FilterRow } from "@/types/filter";
 
 function NavItem({ icon, label, active = false, href = "#", onClick }: any) {
@@ -206,8 +206,26 @@ function ExportDropdown({ testCases, activeProject }: { testCases: any[]; active
   );
 }
 
-function matchClientRow(tc: any, row: FilterRow): boolean {
-  const raw = tc[row.field] ?? null;
+// Convert a stored UTC datetime to local YYYY-MM-DD (matches what HTML date inputs produce)
+function toLocalDateStr(rawDateStr: string): string {
+  const d = new Date(rawDateStr);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function getClientFieldValue(tc: any, field: string, epicsMap: Map<string, any>, storiesMap: Map<string, any>): any {
+  if (field === 'epic.key')    return tc.epic ? (epicsMap.get(tc.epic.id)?.key ?? tc.epic.key ?? tc.epic.title ?? null) : null;
+  if (field === 'epic.name')   return tc.epic ? (epicsMap.get(tc.epic.id)?.name ?? epicsMap.get(tc.epic.id)?.title ?? tc.epic.title ?? null) : null;
+  if (field === 'epic.status') return tc.epic ? (epicsMap.get(tc.epic.id)?.status ?? null) : null;
+  if (field === 'story.key')   return (tc.userStories || []).map((us: any) => storiesMap.get(us.id)?.key ?? us.key ?? us.title ?? us.id);
+  if (field === 'story.title') return (tc.userStories || []).map((us: any) => storiesMap.get(us.id)?.title ?? us.title ?? '');
+  if (field === 'story.status') return (tc.userStories || []).map((us: any) => storiesMap.get(us.id)?.status ?? null);
+  if (field === 'story.epicKey') return (tc.userStories || []).map((us: any) => { const s = storiesMap.get(us.id); return s ? (epicsMap.get(s.epicId)?.key ?? null) : null; });
+  if (field === 'story.lastExecStatus') return (tc.userStories || []).map((us: any) => storiesMap.get(us.id)?.coverage?.lastExecutionStatus ?? null);
+  return tc[field] ?? null;
+}
+
+function matchClientRow(tc: any, row: FilterRow, epicsMap: Map<string, any>, storiesMap: Map<string, any>): boolean {
+  const raw = getClientFieldValue(tc, row.field, epicsMap, storiesMap);
   const op = row.operator;
   const val = row.value;
   const rawStr = raw === null ? '' : String(raw).toLowerCase();
@@ -215,26 +233,57 @@ function matchClientRow(tc: any, row: FilterRow): boolean {
   const rawArr: string[] = Array.isArray(raw) ? raw.map((v: any) => String(v).toLowerCase()) : [rawStr];
   const valArr: string[] = Array.isArray(val) && !(op === 'between') ? (val as string[]).map(v => String(v).toLowerCase()) : [];
 
+  // Detect if this field holds a date value
+  const isDateField = raw && String(raw).match(/^\d{4}-\d{2}-\d{2}/);
+
   if (op === 'is empty') return !raw || (Array.isArray(raw) && raw.length === 0);
   if (op === 'is not empty') return !!raw && !(Array.isArray(raw) && raw.length === 0);
-  if (op === '=' || op === 'is') return rawArr.some(r => r === valStr);
-  if (op === '!=' || op === 'is not') return rawArr.every(r => r !== valStr);
+
+  // 'is' / 'in' — when val is an array (MultiSelectDropdown), treat both as "value is one of selected"
+  if (op === 'is' || op === 'in') {
+    if (valArr.length > 0) return rawArr.some(r => valArr.includes(r)); // array val (multi-enum)
+    if (isDateField && valStr.match(/^\d{4}-\d{2}-\d{2}/)) return toLocalDateStr(String(raw)) === valStr;
+    return valStr !== '' && rawArr.some(r => r === valStr);
+  }
+  // 'is not' / 'not in' — inverse
+  if (op === 'is not' || op === 'not in') {
+    if (valArr.length > 0) return rawArr.every(r => !valArr.includes(r)); // array val (multi-enum)
+    if (isDateField && valStr.match(/^\d{4}-\d{2}-\d{2}/)) return toLocalDateStr(String(raw)) !== valStr;
+    return valStr === '' || rawArr.every(r => r !== valStr);
+  }
+  if (op === '=') {
+    if (isDateField && valStr.match(/^\d{4}-\d{2}-\d{2}/)) return toLocalDateStr(String(raw)) === valStr;
+    return valStr !== '' && rawArr.some(r => r === valStr);
+  }
+  if (op === '!=') {
+    if (isDateField && valStr.match(/^\d{4}-\d{2}-\d{2}/)) return toLocalDateStr(String(raw)) !== valStr;
+    return valStr === '' || rawArr.every(r => r !== valStr);
+  }
   if (op === 'contains') return rawArr.some(r => r.includes(valStr));
   if (op === 'not contains') return rawArr.every(r => !r.includes(valStr));
   if (op === 'starts with') return rawArr.some(r => r.startsWith(valStr));
-  if (op === 'in') return valArr.length > 0 && rawArr.some(r => valArr.includes(r));
-  if (op === 'not in') return valArr.length === 0 || rawArr.every(r => !valArr.includes(r));
   if (op === 'includes any') return valArr.some(v => rawArr.includes(v));
   if (op === 'includes all') return valArr.every(v => rawArr.includes(v));
   if (op === 'excludes') return !valArr.some(v => rawArr.includes(v));
   if (op === 'between' && Array.isArray(val) && val.length === 2) {
     const [from, to] = val as [string, string];
-    const rawDate = raw ? new Date(String(raw)).getTime() : NaN;
-    if (!isNaN(rawDate) && String(raw).match(/\d{4}-\d{2}-\d{2}/)) return rawDate >= new Date(from).getTime() && rawDate <= new Date(to).getTime();
-    const n = parseFloat(String(raw)); return n >= parseFloat(from) && n <= parseFloat(to);
+    if (!from && !to) return true;
+    // For date fields: use local date string comparison (YYYY-MM-DD ≥ from && ≤ to)
+    if (isDateField && (from.match(/^\d{4}-\d{2}-\d{2}/) || to.match(/^\d{4}-\d{2}-\d{2}/))) {
+      const localDate = toLocalDateStr(String(raw));
+      return (!from || localDate >= from) && (!to || localDate <= to);
+    }
+    const n = parseFloat(String(raw));
+    return n >= parseFloat(from || '-Infinity') && n <= parseFloat(to || 'Infinity');
   }
-  if (op === 'before') return raw ? new Date(String(raw)).getTime() < new Date(valStr).getTime() : false;
-  if (op === 'after') return raw ? new Date(String(raw)).getTime() > new Date(valStr).getTime() : false;
+  if (op === 'before') {
+    if (isDateField && valStr.match(/^\d{4}-\d{2}-\d{2}/)) return toLocalDateStr(String(raw)) < valStr;
+    return raw ? new Date(String(raw)).getTime() < new Date(valStr).getTime() : false;
+  }
+  if (op === 'after') {
+    if (isDateField && valStr.match(/^\d{4}-\d{2}-\d{2}/)) return toLocalDateStr(String(raw)) > valStr;
+    return raw ? new Date(String(raw)).getTime() > new Date(valStr).getTime() : false;
+  }
   const n = parseFloat(String(raw)); const vn = parseFloat(valStr);
   if (op === '>') return n > vn; if (op === '>=') return n >= vn;
   if (op === '<') return n < vn; if (op === '<=') return n <= vn;
@@ -271,6 +320,8 @@ function TestCasesInner() {
   const [users, setUsers] = useState<any[]>([]);
 
   const [suiteModalTab, setSuiteModalTab] = useState<'manual' | 'query'>('manual');
+  const [epicsMap, setEpicsMap] = useState<Map<string, any>>(new Map());
+  const [storiesMap, setStoriesMap] = useState<Map<string, any>>(new Map());
 
   // Detail-panel tabs
   const [detailTab, setDetailTab] = useState<'edit' | 'history' | 'attachments'>('edit');
@@ -301,6 +352,24 @@ function TestCasesInner() {
     // load users for assignment
     const usrRes = await fetch("/api/auth/users").then(r => r.json());
     if (usrRes.success) setUsers(usrRes.users || []);
+
+    // load RTM maps for client-side epic/story field filtering
+    const [epicsRes, storiesRes] = await Promise.all([
+      fetch("/api/rtm/epics").then(r => r.json()).catch(() => null),
+      fetch("/api/rtm/stories").then(r => r.json()).catch(() => null),
+    ]);
+    if (epicsRes) {
+      const epics: any[] = epicsRes.epics || (Array.isArray(epicsRes) ? epicsRes : []);
+      const m = new Map<string, any>();
+      epics.forEach(e => { m.set(e.id, e); if (e.key) m.set(e.key, e); });
+      setEpicsMap(m);
+    }
+    if (storiesRes) {
+      const stories: any[] = storiesRes.stories || (Array.isArray(storiesRes) ? storiesRes : []);
+      const m = new Map<string, any>();
+      stories.forEach(s => { m.set(s.id, s); if (s.key) m.set(s.key, s); });
+      setStoriesMap(m);
+    }
   };
 
   const selectedProject = projects.find((p: any) => p.key === form.project);
@@ -488,9 +557,9 @@ function TestCasesInner() {
     .filter(tc => !searchQuery || tc.title?.toLowerCase().includes(searchQuery.toLowerCase()) || tc.testCaseId?.toLowerCase().includes(searchQuery.toLowerCase()))
     .filter(tc => {
       if (filterRows.length === 0) return true;
-      let result = matchClientRow(tc, filterRows[0]);
+      let result = matchClientRow(tc, filterRows[0], epicsMap, storiesMap);
       for (let i = 1; i < filterRows.length; i++) {
-        const curr = matchClientRow(tc, filterRows[i]);
+        const curr = matchClientRow(tc, filterRows[i], epicsMap, storiesMap);
         result = filterRows[i - 1].connector === 'OR' ? result || curr : result && curr;
       }
       return result;
@@ -530,7 +599,7 @@ function TestCasesInner() {
             <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full bg-[var(--bg-surface)] border-[var(--border-base)] rounded-lg pl-8 pr-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-blue-500 transition" placeholder="Search test cases..." />
           </div>
 
-          <AdvancedFilterBar mode="testcases" onChange={setFilterRows} />
+          <AdvancedFilterBar mode="testcases" onChange={setFilterRows} projectId={projectFilter || ''} currentUser={currentUser} />
 
           <span className="text-xs text-[var(--text-muted)] ml-auto">{filtered.length} / {testCases.length} TCs</span>
         </div>
@@ -585,8 +654,10 @@ function TestCasesInner() {
                   <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-32">Priority</th>
                   <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-36">Status</th>
                   <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-40">Assignee</th>
-                  <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-36">Created Details</th>
-                  <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-36">Modified Details</th>
+                  <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-28">Created By</th>
+                  <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-28">Created Date</th>
+                  <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-28">Modified By</th>
+                  <th className="text-left text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-28">Modified Date</th>
                   <th className="text-right text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-4 py-3 w-28">Actions</th>
                 </tr>
               </thead>
@@ -606,14 +677,10 @@ function TestCasesInner() {
                     <td className="px-4 py-3">
                       {tc.assignedTester ? <span className="flex items-center gap-1 text-xs text-[var(--text-secondary)]"><UserCheck size={11} className="text-blue-400" />{tc.assignedTester}</span> : <span className="text-xs text-[var(--text-muted)]">—</span>}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="text-[10px] text-[var(--text-secondary)] font-bold">{tc.createdBy || "admin"}</div>
-                      <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{tc.createdDate ? new Date(tc.createdDate).toLocaleDateString() : "—"}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="text-[10px] text-[var(--text-secondary)] font-bold">{tc.updatedBy || "admin"}</div>
-                      <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{tc.updatedDate ? new Date(tc.updatedDate).toLocaleDateString() : "—"}</div>
-                    </td>
+                    <td className="px-4 py-3"><span className="text-[10px] text-[var(--text-secondary)]">{tc.createdBy || "admin"}</span></td>
+                    <td className="px-4 py-3"><span className="text-[10px] text-[var(--text-muted)]">{tc.createdDate ? new Date(tc.createdDate).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }) : "—"}</span></td>
+                    <td className="px-4 py-3"><span className="text-[10px] text-[var(--text-secondary)]">{tc.updatedBy || "admin"}</span></td>
+                    <td className="px-4 py-3"><span className="text-[10px] text-[var(--text-muted)]">{tc.updatedDate ? new Date(tc.updatedDate).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }) : "—"}</span></td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2 justify-end" onClick={e => e.stopPropagation()}>
                          <button onClick={() => cloneTC(tc)} className="p-1.5 text-blue-400 hover:text-white bg-blue-400/10 hover:bg-blue-500 rounded-lg transition-all border border-blue-400/20" title="Clone"><Copy size={14} /></button>
@@ -659,7 +726,7 @@ function TestCasesInner() {
                     className={`flex-1 h-8 rounded-lg text-xs font-semibold transition-colors ${suiteModalTab === 'query' ? 'shadow-sm' : ''}`}
                     style={suiteModalTab === 'query' ? { background: 'var(--bg-overlay)', color: 'var(--text-primary)' } : { color: 'var(--text-muted)' }}
                   >
-                    Query Builder
+                    Add by Filter
                   </button>
                 </div>
 
@@ -783,14 +850,13 @@ function TestCasesInner() {
                 </div>
                 </>
                 ) : (
-                  <JQLQueryBuilder
+                  <SavedFilterPicker
                     projectId={projectFilter || ''}
-                    existingSuiteIds={[]}
-                    onAddToSuite={(tcIds) => {
+                    existingTcIds={selectedTCs}
+                    onAdd={(tcIds) => {
                       setSelectedTCs((prev: string[]) => [...new Set([...prev, ...tcIds])]);
                       setSuiteModalTab('manual');
                     }}
-                    onCancel={() => setSuiteModalTab('manual')}
                   />
                 )}
               </div>

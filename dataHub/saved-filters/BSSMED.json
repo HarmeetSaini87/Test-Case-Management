@@ -1,0 +1,40 @@
+[
+  {
+    "id": "sf-1781723739617",
+    "name": "TEst1",
+    "projectId": "BSSMED",
+    "filters": [
+      {
+        "id": "95ipa4krul6",
+        "field": "priority",
+        "operator": "in",
+        "value": [
+          "High"
+        ],
+        "connector": "AND"
+      }
+    ],
+    "createdBy": "admin",
+    "createdAt": "2026-06-17T19:15:39.617Z",
+    "updatedAt": "2026-06-17T19:15:39.617Z"
+  },
+  {
+    "id": "sf-1781723771774",
+    "name": "Test 2",
+    "projectId": "BSSMED",
+    "filters": [
+      {
+        "id": "95ipa4krul6",
+        "field": "priority",
+        "operator": "in",
+        "value": [
+          "Medium"
+        ],
+        "connector": "AND"
+      }
+    ],
+    "createdBy": "admin",
+    "createdAt": "2026-06-17T19:16:11.774Z",
+    "updatedAt": "2026-06-17T19:16:11.774Z"
+  }
+]

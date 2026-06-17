@@ -9,8 +9,8 @@ export class CoverageService {
     const testcases = TestcaseRepository.findByProject(projectId);
     
     return testcases.some(tc => {
-      // Must have an ACTIVE or APPROVED status
-      if (!["ACTIVE", "APPROVED"].includes(tc.status?.toUpperCase())) {
+      // Must have an ACTIVE, APPROVED, DRAFT, or REVIEW status
+      if (!["ACTIVE", "APPROVED", "DRAFT", "REVIEW"].includes(tc.status?.toUpperCase())) {
         return false;
       }
 
@@ -33,7 +33,7 @@ export class CoverageService {
 
     // Filter to valid testcases once to avoid repeated parsing in loop
     const testcases = TestcaseRepository.findByProject(projectId);
-    const validTestcases = testcases.filter(tc => ["ACTIVE", "APPROVED"].includes(tc.status?.toUpperCase()));
+    const validTestcases = testcases.filter(tc => ["ACTIVE", "APPROVED", "DRAFT", "REVIEW"].includes(tc.status?.toUpperCase()));
 
     activeStories.forEach(story => {
       const isCov = validTestcases.some(tc => {

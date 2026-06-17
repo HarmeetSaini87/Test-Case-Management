@@ -16,6 +16,9 @@ export async function GET(req: Request) {
 
     let stories = StoryRepository.findByProject(projectId);
     
+    // Exclude archived stories entirely from the API response
+    stories = stories.filter(s => s.status?.toUpperCase() !== "ARCHIVED");
+    
     // Optional filtering by epicId
     if (epicId) {
       stories = stories.filter(s => s.epicId === epicId);

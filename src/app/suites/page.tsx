@@ -11,7 +11,7 @@ import Sidebar from "../components/Sidebar";
 import TopNav from "../components/TopNav";
 import { useProject } from "../components/ProjectContext";
 import AdvancedFilterBar from "../components/AdvancedFilterBar";
-import JQLQueryBuilder from "../components/JQLQueryBuilder";
+import SavedFilterPicker from "../components/SavedFilterPicker";
 import type { FilterRow } from "@/types/filter";
 
 const STATUS_CFG: any = {
@@ -987,7 +987,7 @@ export default function SuitesPage() {
 
                 <div style={{ borderTop: '1px solid var(--border-base)' }} />
 
-                {/* Section C — Add TCs via Query Builder */}
+                {/* Section C — Add TCs via Saved/Ad-hoc Filter */}
                 <div className="flex flex-col gap-3">
                   <button
                     type="button"
@@ -995,14 +995,13 @@ export default function SuitesPage() {
                     className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-opacity hover:opacity-80"
                     style={{ color: 'var(--accent-cyan)' }}
                   >
-                    <Database size={14} /> {showAddTCsPanel ? '▲' : '▼'} Add Test Cases via Query Builder
+                    <Database size={14} /> {showAddTCsPanel ? '▲' : '▼'} Add More Test Cases
                   </button>
                   {showAddTCsPanel && (
-                    <JQLQueryBuilder
+                    <SavedFilterPicker
                       projectId={editSuite.project}
-                      existingSuiteIds={editSuite.testCaseIds || []}
-                      onAddToSuite={addTCsFromQuery}
-                      onCancel={() => setShowAddTCsPanel(false)}
+                      existingTcIds={editSuite.testCaseIds || []}
+                      onAdd={addTCsFromQuery}
                     />
                   )}
                 </div>

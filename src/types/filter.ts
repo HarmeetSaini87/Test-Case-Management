@@ -60,7 +60,7 @@ export const JQL_FIELD_MAP: Record<string, { label: string; type: 'text' | 'enum
 
 export const OPERATORS_BY_TYPE: Record<string, FilterOperator[]> = {
   text:         ['=', '!=', 'contains', 'not contains', 'starts with', 'is empty', 'is not empty'],
-  'multi-enum': ['is', 'is not', 'in', 'not in'],
+  'multi-enum': ['in', 'not in', 'is', 'is not'],
   date:         ['=', 'before', 'after', 'between'],
   number:       ['=', '!=', '>', '>=', '<', '<=', 'between'],
   tags:         ['includes any', 'includes all', 'excludes'],

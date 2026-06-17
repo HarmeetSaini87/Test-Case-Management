@@ -39,7 +39,7 @@ function RtmExportDropdown({ stories, epics, testcases, activeProject }: { stori
 
   const isCovered = (storyId: string) => {
     const linked = getLinkedTestcases(storyId);
-    return linked.some(tc => ["ACTIVE", "APPROVED", "DRAFT"].includes(tc.status?.toUpperCase()));
+    return linked.some(tc => ["ACTIVE", "APPROVED", "DRAFT", "REVIEW"].includes(tc.status?.toUpperCase()));
   };
 
   const exportCSV = () => {
@@ -269,7 +269,7 @@ export default function RtmDashboard() {
 
   const isCovered = (storyId: string) => {
     const linked = getLinkedTestcases(storyId);
-    return linked.some(tc => ["ACTIVE", "APPROVED", "DRAFT"].includes(tc.status?.toUpperCase()));
+    return linked.some(tc => ["ACTIVE", "APPROVED", "DRAFT", "REVIEW"].includes(tc.status?.toUpperCase()));
   };
 
   // Metrics Engine
@@ -533,7 +533,7 @@ export default function RtmDashboard() {
                               <div>
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                                   {linkedTc.map(tc => {
-                                    const isPassing = ["ACTIVE", "APPROVED", "DRAFT"].includes(tc.status?.toUpperCase());
+                                    const isPassing = ["ACTIVE", "APPROVED", "DRAFT", "REVIEW"].includes(tc.status?.toUpperCase());
                                     return (
                                       <Link key={tc.testCaseId} href={`/testcases/${tc.testCaseId}/edit`} style={{ textDecoration: "none" }}>
                                         <span style={{ 

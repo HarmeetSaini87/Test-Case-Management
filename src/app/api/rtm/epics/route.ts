@@ -13,7 +13,11 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, error: "projectId parameter is required." }, { status: 400 });
     }
 
-    const epics = EpicRepository.findByProject(projectId);
+    let epics = EpicRepository.findByProject(projectId);
+    
+    // Exclude archived epics entirely from the API response
+    epics = epics.filter(e => e.status?.toUpperCase() !== "ARCHIVED");
+    
     return NextResponse.json({ success: true, epics });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
